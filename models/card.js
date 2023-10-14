@@ -23,12 +23,12 @@ const cardSchema = new mongoose.Schema({
     required: true,
   },
   owner: {
-    type: mongoose.Schema.Types.ObjectId, // тип данных - ObjectId
+    type: mongoose.Schema.Types.ObjectId, // связь карточки с моделью пользователя
     ref: 'user', // ссылка на модель автора карточки
     required: true,
   },
   likes: [{
-    type: mongoose.Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId, // связь карточки с моделью пользователя
     default: [],
   }],
   createdAt: {
