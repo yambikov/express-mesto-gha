@@ -79,10 +79,36 @@ app.patch('/users/me', (req, res) => {
     runValidators: true, // данные будут валидированы перед изменением
     // upsert: true, // если пользователь не найден, он будет создан
   })
+    // eslint-disable-next-line consistent-return
+    .then((data) => {
+      if (!data) {
+        // Если data равен null, значит пользователь с указанным _id не найден
+        return res.status(404).send({ message: 'Пользователь с указанным _id не найден.' });
+      }
+      res.status(200).send(data);
+    })
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return res.status(400).send({ message: ' Переданы некорректные данные при обновлении профиля' });
+      }
+      return res.status(500).send({ message: 'Ошибка по умолчанию' });
+    });
+});
+
+app.patch('/users/me/avatar', (req, res) => {
+  const { avatar } = req.body;
+  console.log(req.body);
+
+  UserModel.findByIdAndUpdate(req.user._id, { avatar }, {
+    new: true, // обработчик then получит на вход обновлённую запись
+    // runValidators: true, // данные будут валидированы перед изменением
+    // upsert: true, // если пользователь не найден, он будет создан
+  })
     .then((data) => {
       res.status(200).send(data);
     })
     .catch((err) => {
+      console.log(err.message);
       if (err.name === 'ValidationError') {
         return res.status(400).send({ message: err.message });
       }
