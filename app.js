@@ -50,6 +50,25 @@ app.get('/cards', (req, res) => {
     });
 });
 
+app.delete('/cards/:cardId', (req, res) => {
+  const { cardId } = req.params;
+  CardModel.findByIdAndDelete(cardId)
+    // eslint-disable-next-line consistent-return
+    .then((data) => {
+      if (!data) {
+        return res.status(404).send({ message: 'Card not found' });
+      }
+      res.status(200).send(data);
+    })
+    // eslint-disable-next-line consistent-return
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        return res.status(400).send({ message: 'Invalid card ID' });
+      }
+      res.status(500).send({ message: 'Server error' }); // Отправляем ошибку
+    });
+});
+
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`);
 });
