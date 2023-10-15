@@ -52,9 +52,9 @@ app.get('/users/:userId', (req, res) => {
 
 // POST /users — создаёт пользователя
 app.post('/users', (req, res) => {
-  const userData = req.body; // получаем данные из тела запроса
+  const { name, about, avatar } = req.body;
 
-  UserModel.create(userData) // Создаём нового пользователя
+  UserModel.create({ name, about, avatar }) // Создаём нового пользователя
     .then((data) => {
       res.status(201).json(data);
     })
