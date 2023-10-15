@@ -24,9 +24,10 @@ app.use((req, res, next) => {
 });
 
 app.post('/cards', (req, res) => {
-  const { name, link, owner } = req.body;
+  const { name, link } = req.body;
+  console.log(req.body);
 
-  return CardModel.create({ name, link, owner })
+  return CardModel.create({ name, link, owner: req.user._id })
     .then((data) => {
       res.status(201).send(data);
     })
