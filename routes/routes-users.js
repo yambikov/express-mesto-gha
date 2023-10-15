@@ -1,4 +1,5 @@
-const userRouter = require('express').Router();
+const userRouter = require('express').Router(); // создаем роуты юзера
+
 const { createUser, getUsers, getUserById } = require('../controllers/users');
 
 userRouter.get('/users', getUsers); // get all users

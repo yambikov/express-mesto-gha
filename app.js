@@ -2,7 +2,8 @@ const express = require('express');
 
 // eslint-disable-next-line import/no-extraneous-dependencies
 const mongoose = require('mongoose');
-// const UserModel = require('./models/user');
+
+const userRouter = require('./routes/routes-users'); // импортируем роуты юзера
 
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
@@ -14,12 +15,7 @@ const app = express();
 const PORT = 3000;
 
 app.use(express.json()); // to support JSON-encoded bodies
-
-// app.get('/users', getUsers); // get all users
-
-// app.get('/users/:userId', getUserById); // get user by id
-
-// app.post('/users', createUser); // create user
+app.use(userRouter); // подключаем роуты юзера
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`);
