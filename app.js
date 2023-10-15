@@ -38,6 +38,17 @@ app.post('/cards', (req, res) => {
     });
 });
 
+app.get('/cards', (req, res) => {
+  CardModel.find()
+    .then((data) => {
+      res.status(200).send(data);
+    })
+    // eslint-disable-next-line arrow-body-style, no-unused-vars
+    .catch((err) => {
+      return res.status(500).send({ message: 'Server error' });
+    });
+});
+
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`);
 });
