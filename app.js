@@ -2,6 +2,7 @@ const express = require('express'); // eslint-disable-next-line import/no-extran
 const mongoose = require('mongoose');
 const userRouter = require('./routes/routes-users'); // импортируем роуты юзера
 const CardModel = require('./models/card');
+const UserModel = require('./models/user');
 
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
@@ -66,6 +67,26 @@ app.delete('/cards/:cardId', (req, res) => {
         return res.status(400).send({ message: 'Invalid card ID' });
       }
       res.status(500).send({ message: 'Server error' }); // Отправляем ошибку
+    });
+});
+
+app.patch('/users/me', (req, res) => {
+  const { name, about } = req.body;
+  console.log(req.body);
+
+  UserModel.findByIdAndUpdate(req.user._id, { name, about }, {
+    new: true, // обработчик then получит на вход обновлённую запись
+    runValidators: true, // данные будут валидированы перед изменением
+    // upsert: true, // если пользователь не найден, он будет создан
+  })
+    .then((data) => {
+      res.status(200).send(data);
+    })
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return res.status(400).send({ message: err.message });
+      }
+      return res.status(500).send({ message: 'Server error' });
     });
 });
 
