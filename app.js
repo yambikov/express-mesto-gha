@@ -24,18 +24,38 @@ app.post('/post', (req, res) => {
   res.status(201).send(`Привет от POST! ${name}`);
 });
 
-// CRUD (create, read, update, delete)
-
+// CRUD (create, read, update, delete) //
 // GET /users — возвращает всех пользователей
-// GET /users/:userId - возвращает пользователя по _id
-// POST /users — создаёт пользователя
+app.get('/users', (req, res) => {
+  UserModel.find()
+    .then((data) => {
+      res.status(200).json(data);
+    })
+    .catch((err) => {
+      console.log(err.message);
+      res.status(500).json({ error: 'Ошибка при получении пользователей' }); // Отправляем ошибку
+    });
+});
 
+// GET /users/:userId - возвращает пользователя по _id
+app.get('/users/:userId', (req, res) => {
+  const { userId } = req.params;
+  UserModel.findById(userId)
+    .then((data) => {
+      res.status(200).json(data);
+    })
+    .catch((err) => {
+      console.log(err.message);
+      res.status(500).json({ error: 'Ошибка при получении пользователя' }); // Отправляем ошибку
+    });
+});
+
+// POST /users — создаёт пользователя
 app.post('/users', (req, res) => {
   const userData = req.body; // получаем данные из тела запроса
 
   UserModel.create(userData) // Создаём нового пользователя
     .then((data) => {
-      console.log(data);
       res.status(201).json(data);
     })
     .catch((err) => {
