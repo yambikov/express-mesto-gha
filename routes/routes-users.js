@@ -1,11 +1,10 @@
 const userRouter = require('express').Router(); // создаем роуты юзера
+const { createUser, getUsers, getUserById } = require('../controllers/users'); // импортируем контроллеры
 
-const { createUser, getUsers, getUserById } = require('../controllers/users');
+userRouter.get('/', getUsers); // полный путь /users/ так как в app.use('/users', userRouter);
 
-userRouter.get('/users', getUsers); // get all users
+userRouter.get('/:userId', getUserById); // полный путь /users/:userId'
 
-userRouter.get('/users/:userId', getUserById); // get user by id
-
-userRouter.post('/users', createUser); // create user
+userRouter.post('/', createUser); // полный путь /users/
 
 module.exports = userRouter;
