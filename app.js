@@ -135,7 +135,7 @@ app.put('/cards/:cardId/likes', (req, res) => {
     // eslint-disable-next-line no-unused-vars, consistent-return
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(400).send({ message: 'Invalid user ID' });
+        return res.status(404).send({ message: 'Invalid user ID' });
       }
       res.status(500).send({ message: 'Server error' }); // Отправляем ошибку
     });
@@ -157,7 +157,7 @@ app.delete('/cards/:cardId/likes', (req, res) => {
     // eslint-disable-next-line consistent-return
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(400).send({ message: 'Invalid user ID' });
+        return res.status(404).send({ message: 'Invalid user ID' });
       }
       res.status(500).send({ message: 'Server error' }); // Отправляем ошибку
     });
