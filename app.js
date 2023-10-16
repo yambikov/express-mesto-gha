@@ -127,9 +127,9 @@ app.put('/cards/:cardId/likes', (req, res) => {
   )
     // eslint-disable-next-line consistent-return
     .then((data) => {
-      if (req.params.cardId !== data._id.toString()) {
-        return res.status(404).send({ message: 'Card not found' });
-      }
+      // if (req.params.cardId !== data._id.toString()) {
+      //   return res.status(404).send({ message: 'Card not found' });
+      // }
       res.status(200).send(data);
     })
     // eslint-disable-next-line no-unused-vars, consistent-return
@@ -140,8 +140,11 @@ app.put('/cards/:cardId/likes', (req, res) => {
       //   }
       //   res.status(500).send({ message: 'Server error' }); // Отправляем ошибку
       // });
-      if (err.name === 'TypeError' || err.name === 'CastError') {
-        return res.status(404).send({ message: 'Invalid user ID' });
+      if (err.name === 'TypeError') {
+        return res.status(404).send({ message: 'Несуществующий в БД id карточки' });
+      }
+      if (err.name === 'CastError') {
+        return res.status(400).send({ message: 'Некорректный id карточки' });
       }
       res.status(500).send({ message: 'Server error' }); // Отправляем ошибку
     });
