@@ -158,9 +158,9 @@ app.delete('/cards/:cardId/likes', (req, res) => {
   )
     // eslint-disable-next-line consistent-return
     .then((data) => {
-      if (req.params.cardId !== data._id.toString()) {
-        return res.status(404).send({ message: 'Card not found' });
-      }
+      // if (req.params.cardId !== data._id.toString()) {
+      //   return res.status(404).send({ message: 'Card not found' });
+      // }
       res.status(200).send(data);
     })
     // eslint-disable-next-line consistent-return
