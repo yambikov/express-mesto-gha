@@ -156,8 +156,14 @@ app.delete('/cards/:cardId/likes', (req, res) => {
       }
       res.status(200).send(data);
     })
-    // eslint-disable-next-line no-unused-vars
-    .catch((err) => res.status(500).send({ message: 'Ошибка по умолчанию.' }));
+    // eslint-disable-next-line consistent-return
+    .catch((err) => {
+      console.log(err);
+      if (err.name === 'CastError') {
+        return res.status(400).send({ message: 'Invalid user ID' });
+      }
+      res.status(500).send({ message: 'Server error' }); // Отправляем ошибку
+    });
 });
 
 app.listen(PORT, () => {
