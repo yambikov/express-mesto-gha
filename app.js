@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const userRouter = require('./routes/routes-users'); // импортируем роуты юзера
 const CardModel = require('./models/card');
 const UserModel = require('./models/user');
+// const card = require('./models/card');
 
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
@@ -126,13 +127,20 @@ app.put('/cards/:cardId/likes', (req, res) => {
   )
     // eslint-disable-next-line consistent-return
     .then((data) => {
-      if (!data) {
+      console.log(data);
+      if (req.params.cardId !== data._id) {
         return res.status(404).send({ message: 'Card not found' });
       }
       res.status(200).send(data);
     })
-    // eslint-disable-next-line no-unused-vars
-    .catch((err) => res.status(500).send({ message: 'Ошибка по умолчанию.' }));
+    // eslint-disable-next-line no-unused-vars, consistent-return
+    .catch((err) => {
+      console.log(err);
+      if (err.name === 'CastError') {
+        return res.status(400).send({ message: 'Invalid user ID' });
+      }
+      res.status(500).send({ message: 'Server error' }); // Отправляем ошибку
+    });
 });
 
 app.delete('/cards/:cardId/likes', (req, res) => {
@@ -143,7 +151,6 @@ app.delete('/cards/:cardId/likes', (req, res) => {
   )
     // eslint-disable-next-line consistent-return
     .then((data) => {
-      console.log('clicked');
       if (!data) {
         return res.status(404).send({ message: 'Card not found' });
       }
