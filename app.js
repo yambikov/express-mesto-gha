@@ -91,7 +91,7 @@ app.patch('/users/me', (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: ' Переданы некорректные данные при обновлении профиля' });
+        return res.status(400).send({ message: 'Ошибка валидации' });
       }
       return res.status(500).send({ message: 'Ошибка по умолчанию' });
     });
@@ -111,6 +111,23 @@ app.patch('/users/me/avatar', (req, res) => {
       }
       if (!avatar) {
         return res.status(400).send({ message: 'Переданы некорректные данные при обновлении аватара.' });
+      }
+      res.status(200).send(data);
+    })
+    // eslint-disable-next-line no-unused-vars
+    .catch((err) => res.status(500).send({ message: 'Ошибка по умолчанию.' }));
+});
+
+app.put('/cards/:cardId', (req, res) => {
+  CardModel.findByIdAndUpdate(
+    req.params.cardId,
+    { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
+    { new: true },
+  )
+    // eslint-disable-next-line consistent-return
+    .then((data) => {
+      if (!data) {
+        return res.status(404).send({ message: 'Card not found' });
       }
       res.status(200).send(data);
     })
