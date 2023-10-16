@@ -118,7 +118,7 @@ app.patch('/users/me/avatar', (req, res) => {
     .catch((err) => res.status(500).send({ message: 'Ошибка по умолчанию.' }));
 });
 
-app.put('/cards/:cardId', (req, res) => {
+app.put('/cards/:cardId/likes', (req, res) => {
   CardModel.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
@@ -126,6 +126,24 @@ app.put('/cards/:cardId', (req, res) => {
   )
     // eslint-disable-next-line consistent-return
     .then((data) => {
+      if (!data) {
+        return res.status(404).send({ message: 'Card not found' });
+      }
+      res.status(200).send(data);
+    })
+    // eslint-disable-next-line no-unused-vars
+    .catch((err) => res.status(500).send({ message: 'Ошибка по умолчанию.' }));
+});
+
+app.delete('/cards/:cardId/likes', (req, res) => {
+  CardModel.findByIdAndUpdate(
+    req.params.cardId,
+    { $pull: { likes: req.user._id } }, // убрать _id из массива
+    { new: true },
+  )
+    // eslint-disable-next-line consistent-return
+    .then((data) => {
+      console.log('clicked');
       if (!data) {
         return res.status(404).send({ message: 'Card not found' });
       }
