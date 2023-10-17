@@ -40,9 +40,9 @@ const getUserById = (req, res) => {
     // eslint-disable-next-line consistent-return
     .catch((err) => {
       console.log(err);
-      // if (err.name === 'CastError') {
-      //   return res.status(400).send({ message: err.message });
-      // }
+      if (err.name === 'CastError') {
+        return res.status(400).send({ message: ErrorMessages.Error400 });
+      }
       res.status(500).send({ message: ErrorMessages.ServerError500 }); // Отправляем ошибку
     });
 };

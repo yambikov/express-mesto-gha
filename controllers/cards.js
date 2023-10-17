@@ -40,9 +40,9 @@ const deleteCard = (req, res) => {
     })
     // eslint-disable-next-line consistent-return, no-unused-vars
     .catch((err) => {
-      // if (err.name === 'CastError') {
-      //   return res.status(400).send({ message: 'Invalid card ID' });
-      // }
+      if (err.name === 'CastError') {
+        return res.status(400).send({ message: ErrorMessages.Error400 });
+      }
       res.status(500).send({ message: ErrorMessages.ServerError500 }); // Отправляем ошибку
     });
 };
@@ -62,9 +62,9 @@ const addCardLike = (req, res) => {
     })
     // eslint-disable-next-line consistent-return, no-unused-vars
     .catch((err) => {
-      // if (err.name === 'CastError') {
-      //   return res.status(400).send({ message: ErrorMessages.CardsLike400 });
-      // }
+      if (err.name === 'CastError') {
+        return res.status(400).send({ message: ErrorMessages.CardsLike400 });
+      }
       res.status(500).send({ message: ErrorMessages.ServerError500 }); // Отправляем ошибку
     });
 };
