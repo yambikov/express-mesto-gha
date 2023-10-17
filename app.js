@@ -163,6 +163,8 @@ app.delete('/cards/:cardId/likes', (req, res) => {
     });
 });
 
+app.patch('/*', (req, res) => res.status(404).send({ message: 'Страница не найдена' }));
+
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`);
 });
