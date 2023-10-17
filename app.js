@@ -2,8 +2,6 @@ const express = require('express'); // eslint-disable-next-line import/no-extran
 const mongoose = require('mongoose');
 const userRouter = require('./routes/routes-users'); // импортируем роуты юзера
 const CardModel = require('./models/card');
-// const UserModel = require('./models/user');
-// const card = require('./models/card');
 
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
@@ -25,22 +23,23 @@ app.use((req, res, next) => {
 });
 
 app.use('/users', userRouter); // подключаем роуты юзера
+app.use('/cards', userRouter); // подключаем роуты юзера
 
-app.post('/cards', (req, res) => {
-  const { name, link } = req.body;
-  console.log(req.body);
+// app.post('/cards', (req, res) => {
+//   const { name, link } = req.body;
+//   console.log(req.body);
 
-  return CardModel.create({ name, link, owner: req.user._id })
-    .then((data) => {
-      res.status(201).send(data);
-    })
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: err.message });
-      }
-      return res.status(500).send({ message: 'Server error' });
-    });
-});
+//   return CardModel.create({ name, link, owner: req.user._id })
+//     .then((data) => {
+//       res.status(201).send(data);
+//     })
+//     .catch((err) => {
+//       if (err.name === 'ValidationError') {
+//         return res.status(400).send({ message: err.message });
+//       }
+//       return res.status(500).send({ message: 'Server error' });
+//     });
+// });
 
 app.get('/cards', (req, res) => {
   CardModel.find()
@@ -71,56 +70,6 @@ app.delete('/cards/:cardId', (req, res) => {
       res.status(500).send({ message: 'Server error' }); // Отправляем ошибку
     });
 });
-
-// app.patch('/users/me', (req, res) => {
-//   const { name, about } = req.body;
-//   console.log(req.body);
-
-//   UserModel.findByIdAndUpdate(req.user._id, { name, about }, {
-//     new: true, // обработчик then получит на вход обновлённую запись
-//     runValidators: true, // данные будут валидированы перед изменением
-//   })
-//     // eslint-disable-next-line consistent-return
-//     .then((data) => {
-//       if (!data) {
-//         // Если data равен null, значит пользователь с указанным _id не найден
-//         return res.status(404).send({ message: 'Пользователь с указанным _id не найден.' });
-//       }
-//       if (!name && !about) {
-// eslint-disable-next-line max-len
-//         return res.status(400).send({ message: 'Переданы некорректные данные при обновлении профиля' });
-//       }
-//       res.status(200).send(data);
-//     })
-//     .catch((err) => {
-//       if (err.name === 'ValidationError') {
-//         return res.status(400).send({ message: 'Ошибка валидации' });
-//       }
-//       return res.status(500).send({ message: 'Ошибка по умолчанию' });
-//     });
-// });
-
-// app.patch('/users/me/avatar', (req, res) => {
-//   const { avatar } = req.body;
-
-//   UserModel.findByIdAndUpdate(req.user._id, { avatar }, {
-//     new: true, // обработчик then получит на вход обновлённую запись
-//   })
-//     // eslint-disable-next-line consistent-return
-//     .then((data) => {
-//       if (!data) {
-//         // Если data равен null, значит пользователь с указанным _id не найден
-//         return res.status(404).send({ message: 'Пользователь с указанным _id не найден.' });
-//       }
-//       if (!avatar) {
-// eslint-disable-next-line max-len
-//         return res.status(400).send({ message: 'Переданы некорректные данные при обновлении аватара.' });
-//       }
-//       res.status(200).send(data);
-//     })
-//     // eslint-disable-next-line no-unused-vars
-//     .catch((err) => res.status(500).send({ message: 'Ошибка по умолчанию.' }));
-// });
 
 app.put('/cards/:cardId/likes', (req, res) => {
   CardModel.findByIdAndUpdate(
