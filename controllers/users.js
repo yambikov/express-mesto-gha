@@ -49,8 +49,35 @@ const getUserById = (req, res) => {
     });
 };
 
+const updateUser = (req, res) => {
+  const { name, about } = req.body;
+  UserModel.findByIdAndUpdate(req.user._id, { name, about }, {
+    new: true, // обработчик then получит на вход обновлённую запись
+    runValidators: true, // данные будут валидированы перед изменением
+  })
+    // eslint-disable-next-line consistent-return
+    .then((data) => {
+      if (!data) {
+        // Если data равен null, значит пользователь с указанным _id не найден
+        return res.status(404).send({ message: 'Пользователь с указанным _id не найден.' });
+      }
+      if (!name && !about) {
+        return res.status(400).send({ message: 'Переданы некорректные данные при обновлении профиля' });
+      }
+      res.status(200).send(data);
+    })
+    .catch((err) => {
+      console.log(req.user._id);
+      if (err.name === 'ValidationError') {
+        return res.status(400).send({ message: 'Ошибка валидации' });
+      }
+      return res.status(500).send({ message: 'Ошибка по умолчанию' });
+    });
+};
+
 module.exports = {
   createUser,
   getUsers,
   getUserById,
+  updateUser,
 };

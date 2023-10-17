@@ -15,7 +15,6 @@ const app = express();
 const PORT = 3000;
 
 app.use(express.json()); // to support JSON-encoded bodies
-app.use('/users', userRouter); // подключаем роуты юзера
 
 app.use((req, res, next) => {
   req.user = {
@@ -24,6 +23,8 @@ app.use((req, res, next) => {
   // console.log(req.user);
   next();
 });
+
+app.use('/users', userRouter); // подключаем роуты юзера
 
 app.post('/cards', (req, res) => {
   const { name, link } = req.body;
@@ -71,32 +72,33 @@ app.delete('/cards/:cardId', (req, res) => {
     });
 });
 
-app.patch('/users/me', (req, res) => {
-  const { name, about } = req.body;
-  console.log(req.body);
+// app.patch('/users/me', (req, res) => {
+//   const { name, about } = req.body;
+//   console.log(req.body);
 
-  UserModel.findByIdAndUpdate(req.user._id, { name, about }, {
-    new: true, // обработчик then получит на вход обновлённую запись
-    runValidators: true, // данные будут валидированы перед изменением
-  })
-    // eslint-disable-next-line consistent-return
-    .then((data) => {
-      if (!data) {
-        // Если data равен null, значит пользователь с указанным _id не найден
-        return res.status(404).send({ message: 'Пользователь с указанным _id не найден.' });
-      }
-      if (!name && !about) {
-        return res.status(400).send({ message: 'Переданы некорректные данные при обновлении профиля' });
-      }
-      res.status(200).send(data);
-    })
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: 'Ошибка валидации' });
-      }
-      return res.status(500).send({ message: 'Ошибка по умолчанию' });
-    });
-});
+//   UserModel.findByIdAndUpdate(req.user._id, { name, about }, {
+//     new: true, // обработчик then получит на вход обновлённую запись
+//     runValidators: true, // данные будут валидированы перед изменением
+//   })
+//     // eslint-disable-next-line consistent-return
+//     .then((data) => {
+//       if (!data) {
+//         // Если data равен null, значит пользователь с указанным _id не найден
+//         return res.status(404).send({ message: 'Пользователь с указанным _id не найден.' });
+//       }
+//       if (!name && !about) {
+// eslint-disable-next-line max-len
+//         return res.status(400).send({ message: 'Переданы некорректные данные при обновлении профиля' });
+//       }
+//       res.status(200).send(data);
+//     })
+//     .catch((err) => {
+//       if (err.name === 'ValidationError') {
+//         return res.status(400).send({ message: 'Ошибка валидации' });
+//       }
+//       return res.status(500).send({ message: 'Ошибка по умолчанию' });
+//     });
+// });
 
 app.patch('/users/me/avatar', (req, res) => {
   const { avatar } = req.body;
