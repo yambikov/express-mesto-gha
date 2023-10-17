@@ -1,14 +1,5 @@
 const UserModel = require('../models/user');
-
-const ErrorMessages = {
-  Users400: 'Переданы некорректные данные при создании пользователя',
-  UserId404: 'Пользователь по указанному _id не найден',
-  ServerError500: 'Ошибка по умолчанию',
-  UsersMe400: 'Переданы некорректные данные при обновлении профиля',
-  UsersMe404: 'Пользователь с указанным _id не найден',
-  UsersAvatar400: 'Переданы некорректные данные при обновлении аватара',
-  UsersAvatar404: 'Пользователь с указанным _id не найден',
-};
+const ErrorMessages = require('../utils/errors');
 
 const createUser = (req, res) => {
   const { name, about, avatar } = req.body;
