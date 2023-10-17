@@ -1,5 +1,5 @@
 const UserModel = require('../models/user');
-const ErrorMessages = require('../utils/errors');
+const { ErrorMessages } = require('../utils/errors');
 
 const createUser = (req, res) => {
   const { name, about, avatar } = req.body;

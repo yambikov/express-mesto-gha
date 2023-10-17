@@ -1,5 +1,5 @@
 const CardModel = require('../models/card');
-const ErrorMessages = require('../utils/errors');
+const { ErrorMessages } = require('../utils/errors');
 
 const createCard = (req, res) => {
   const { name, link } = req.body;
