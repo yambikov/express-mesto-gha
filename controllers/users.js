@@ -1,5 +1,15 @@
 const UserModel = require('../models/user');
 
+const ErrorMessages = {
+  Users400: 'Переданы некорректные данные при создании пользователя',
+  UserId404: 'Пользователь по указанному _id не найден',
+  ServerError500: 'Ошибка по умолчанию',
+  UsersMe400: 'Переданы некорректные данные при обновлении профиля',
+  UsersMe404: 'Пользователь с указанным _id не найден',
+  UsersAvatar400: 'Переданы некорректные данные при обновлении аватара',
+  UsersAvatar404: 'Пользователь с указанным _id не найден',
+};
+
 const createUser = (req, res) => {
   const { name, about, avatar } = req.body;
 
@@ -9,9 +19,9 @@ const createUser = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: err.message });
+        return res.status(400).send({ message: ErrorMessages.Users400 });
       }
-      return res.status(500).send({ message: 'Server error' });
+      return res.status(500).send({ message: ErrorMessages.ServerError500 });
     });
 };
 
@@ -22,7 +32,7 @@ const getUsers = (req, res) => {
     })
     // eslint-disable-next-line arrow-body-style, no-unused-vars
     .catch((err) => {
-      return res.status(500).send({ message: 'Server error' });
+      return res.status(500).send({ message: ErrorMessages.ServerError500 });
     });
 };
 
@@ -32,17 +42,17 @@ const getUserById = (req, res) => {
     // eslint-disable-next-line consistent-return
     .then((data) => {
       if (!data) {
-        return res.status(404).send({ message: 'User not found' });
+        return res.status(404).send({ message: ErrorMessages.UserId404 });
       }
       res.status(200).send(data);
     })
     // eslint-disable-next-line consistent-return
     .catch((err) => {
       console.log(err);
-      if (err.name === 'CastError') {
-        return res.status(400).send({ message: 'Invalid user ID' });
-      }
-      res.status(500).send({ message: 'Server error' }); // Отправляем ошибку
+      // if (err.name === 'CastError') {
+      //   return res.status(400).send({ message: err.message });
+      // }
+      res.status(500).send({ message: ErrorMessages.ServerError500 }); // Отправляем ошибку
     });
 };
 
@@ -56,19 +66,19 @@ const updateUser = (req, res) => {
     .then((data) => {
       if (!data) {
         // Если data равен null, значит пользователь с указанным _id не найден
-        return res.status(404).send({ message: 'Пользователь с указанным _id не найден.' });
+        return res.status(404).send({ message: ErrorMessages.UsersMe404 });
       }
       if (!name && !about) {
-        return res.status(400).send({ message: 'Переданы некорректные данные при обновлении профиля' });
+        return res.status(400).send({ message: ErrorMessages.UsersMe400 });
       }
       res.status(200).send(data);
     })
     .catch((err) => {
       console.log(req.user._id);
       if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: 'Ошибка валидации' });
+        return res.status(400).send({ message: ErrorMessages.UsersMe400 });
       }
-      return res.status(500).send({ message: 'Ошибка по умолчанию' });
+      return res.status(500).send({ message: ErrorMessages.ServerError500 });
     });
 };
 
@@ -82,15 +92,15 @@ const updateAvatar = (req, res) => {
     .then((data) => {
       if (!data) {
         // Если data равен null, значит пользователь с указанным _id не найден
-        return res.status(404).send({ message: 'Пользователь с указанным _id не найден.' });
+        return res.status(404).send({ message: ErrorMessages.UsersAvatar404 });
       }
       if (!avatar) {
-        return res.status(400).send({ message: 'Переданы некорректные данные при обновлении аватара.' });
+        return res.status(400).send({ message: ErrorMessages.UsersAvatar400 });
       }
       res.status(200).send(data);
     })
     // eslint-disable-next-line no-unused-vars
-    .catch((err) => res.status(500).send({ message: 'Ошибка по умолчанию.' }));
+    .catch((err) => res.status(500).send({ message: ErrorMessages.ServerError500 }));
 };
 
 module.exports = {
