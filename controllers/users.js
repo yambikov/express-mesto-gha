@@ -8,9 +8,6 @@ const createUser = (req, res) => {
       res.status(201).send(data);
     })
     .catch((err) => {
-      // console.log(err);
-      // так как ниже мы пишем { message: 'Server error' }, то что действительно произошло
-      // становиться непонятным, поэтому, чтобы дебажить нужно использовать console.log(err)
       if (err.name === 'ValidationError') {
         return res.status(400).send({ message: err.message });
       }
