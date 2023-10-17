@@ -1,6 +1,6 @@
 const CardModel = require('../models/card');
 
-const createCard = (res, req) => {
+const createCard = (req, res) => {
   const { name, link } = req.body;
   console.log(req.body);
 
@@ -16,7 +16,7 @@ const createCard = (res, req) => {
     });
 };
 // eslint-disable-next-line no-unused-vars
-const getCards = (res, req) => {
+const getCards = (req, res) => {
   CardModel.find()
     .then((data) => {
       res.status(200).send(data);
@@ -27,7 +27,7 @@ const getCards = (res, req) => {
     });
 };
 
-const deleteCard = (res, req) => {
+const deleteCard = (req, res) => {
   const { cardId } = req.params;
   CardModel.findByIdAndDelete(cardId)
     // eslint-disable-next-line consistent-return
@@ -46,7 +46,7 @@ const deleteCard = (res, req) => {
     });
 };
 
-const addCardLike = (res, req) => {
+const addCardLike = (req, res) => {
   CardModel.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
@@ -68,7 +68,7 @@ const addCardLike = (res, req) => {
     });
 };
 
-const removeCardLike = (res, req) => {
+const removeCardLike = (req, res) => {
   CardModel.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } }, // убрать _id из массива
