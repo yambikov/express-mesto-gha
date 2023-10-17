@@ -2,7 +2,7 @@ const express = require('express'); // eslint-disable-next-line import/no-extran
 const mongoose = require('mongoose');
 const userRouter = require('./routes/routes-users'); // импортируем роуты юзера
 const CardModel = require('./models/card');
-const UserModel = require('./models/user');
+// const UserModel = require('./models/user');
 // const card = require('./models/card');
 
 mongoose.connect('mongodb://localhost:27017/mestodb', {
@@ -100,26 +100,27 @@ app.delete('/cards/:cardId', (req, res) => {
 //     });
 // });
 
-app.patch('/users/me/avatar', (req, res) => {
-  const { avatar } = req.body;
+// app.patch('/users/me/avatar', (req, res) => {
+//   const { avatar } = req.body;
 
-  UserModel.findByIdAndUpdate(req.user._id, { avatar }, {
-    new: true, // обработчик then получит на вход обновлённую запись
-  })
-    // eslint-disable-next-line consistent-return
-    .then((data) => {
-      if (!data) {
-        // Если data равен null, значит пользователь с указанным _id не найден
-        return res.status(404).send({ message: 'Пользователь с указанным _id не найден.' });
-      }
-      if (!avatar) {
-        return res.status(400).send({ message: 'Переданы некорректные данные при обновлении аватара.' });
-      }
-      res.status(200).send(data);
-    })
-    // eslint-disable-next-line no-unused-vars
-    .catch((err) => res.status(500).send({ message: 'Ошибка по умолчанию.' }));
-});
+//   UserModel.findByIdAndUpdate(req.user._id, { avatar }, {
+//     new: true, // обработчик then получит на вход обновлённую запись
+//   })
+//     // eslint-disable-next-line consistent-return
+//     .then((data) => {
+//       if (!data) {
+//         // Если data равен null, значит пользователь с указанным _id не найден
+//         return res.status(404).send({ message: 'Пользователь с указанным _id не найден.' });
+//       }
+//       if (!avatar) {
+// eslint-disable-next-line max-len
+//         return res.status(400).send({ message: 'Переданы некорректные данные при обновлении аватара.' });
+//       }
+//       res.status(200).send(data);
+//     })
+//     // eslint-disable-next-line no-unused-vars
+//     .catch((err) => res.status(500).send({ message: 'Ошибка по умолчанию.' }));
+// });
 
 app.put('/cards/:cardId/likes', (req, res) => {
   CardModel.findByIdAndUpdate(

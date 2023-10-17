@@ -75,9 +75,31 @@ const updateUser = (req, res) => {
     });
 };
 
+const updateAvatar = (req, res) => {
+  const { avatar } = req.body;
+
+  UserModel.findByIdAndUpdate(req.user._id, { avatar }, {
+    new: true, // обработчик then получит на вход обновлённую запись
+  })
+    // eslint-disable-next-line consistent-return
+    .then((data) => {
+      if (!data) {
+        // Если data равен null, значит пользователь с указанным _id не найден
+        return res.status(404).send({ message: 'Пользователь с указанным _id не найден.' });
+      }
+      if (!avatar) {
+        return res.status(400).send({ message: 'Переданы некорректные данные при обновлении аватара.' });
+      }
+      res.status(200).send(data);
+    })
+    // eslint-disable-next-line no-unused-vars
+    .catch((err) => res.status(500).send({ message: 'Ошибка по умолчанию.' }));
+};
+
 module.exports = {
   createUser,
   getUsers,
   getUserById,
   updateUser,
+  updateAvatar,
 };
