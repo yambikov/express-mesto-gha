@@ -32,12 +32,11 @@ const getUserById = (req, res) => {
   const { userId } = req.params;
   UserModel.findById(userId)
     .then((data) => {
-    //   if (!data) {
-    //     return res.status(http2.constants.HTTP_STATUS_NOT_FOUND)
-    //       .send({ message: ErrorMessages.UserId404 });
-    //   }
-    //   return
-      res.status(http2.constants.HTTP_STATUS_OK).send(data);
+      if (!data) {
+        return res.status(http2.constants.HTTP_STATUS_NOT_FOUND)
+          .send({ message: ErrorMessages.UserId404 });
+      }
+      return res.status(http2.constants.HTTP_STATUS_OK).send(data);
     })
 
     .catch((err) => {
