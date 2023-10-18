@@ -12,3 +12,9 @@ module.exports.ErrorMessages = {
   ServerError500: 'Ошибка по умолчанию',
   Error400: 'Переданы некорректные данные',
 };
+
+// http2.constants.HTTP_STATUS_CREATED; // 201 Created
+// http2.constants.HTTP_STATUS_OK; // 200 OK
+// http2.constants.HTTP_STATUS_NOT_FOUND; // 404 Not Found
+// http2.constants.HTTP_STATUS_BAD_REQUEST; // 400 Bad Request;
+// http2.constants.HTTP_STATUS_INTERNAL_SERVER_ERROR; // 500 Internal Server Error;

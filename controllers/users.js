@@ -1,6 +1,4 @@
-// const http2 = require('http2');
-// console.log(http2.constants.HTTP2_HEADER_STATUS);
-// https://nodejs.org/api/http2.html#http2constants
+const http2 = require('http2');
 const UserModel = require('../models/user');
 const { ErrorMessages } = require('../utils/errors');
 
@@ -9,22 +7,26 @@ const createUser = (req, res) => {
 
   return UserModel.create({ name, about, avatar }) // Создаём нового пользователя
     .then((data) => {
-      res.status(201).send(data);
+      res.status(http2.constants.HTTP_STATUS_CREATED).send(data);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: ErrorMessages.Users400 });
+        return res.status(http2.constants.HTTP_STATUS_BAD_REQUEST)
+          .send({ message: ErrorMessages.Users400 });
       }
-      return res.status(500).send({ message: ErrorMessages.ServerError500 });
+      return res.status(http2.constants.HTTP_STATUS_INTERNAL_SERVER_ERROR)
+        .send({ message: ErrorMessages.ServerError500 });
     });
 };
 
 const getUsers = (req, res) => {
+  console.log(http2.constants.HTTP_STATUS_OK);
   UserModel.find()
     .then((data) => {
-      res.status(200).send(data);
+      res.status(http2.constants.HTTP_STATUS_OK).send(data);
     })
-    .catch(() => res.status(500).send({ message: ErrorMessages.ServerError500 }));
+    .catch(() => res.status(http2.constants.HTTP_STATUS_INTERNAL_SERVER_ERROR)
+      .send({ message: ErrorMessages.ServerError500 }));
 };
 
 const getUserById = (req, res) => {
@@ -32,16 +34,19 @@ const getUserById = (req, res) => {
   UserModel.findById(userId)
     .then((data) => {
       if (!data) {
-        return res.status(404).send({ message: ErrorMessages.UserId404 });
+        return res.status(http2.constants.HTTP_STATUS_NOT_FOUND)
+          .send({ message: ErrorMessages.UserId404 });
       }
-      return res.status(200).send(data);
+      return res.status(http2.constants.HTTP_STATUS_OK).send(data);
     })
 
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(400).send({ message: ErrorMessages.Error400 });
+        return res.status(http2.constants.HTTP_STATUS_BAD_REQUEST)
+          .send({ message: ErrorMessages.Error400 });
       }
-      return res.status(500).send({ message: ErrorMessages.ServerError500 }); // Отправляем ошибку
+      return res.status(http2.constants.HTTP_STATUS_INTERNAL_SERVER_ERROR)
+        .send({ message: ErrorMessages.ServerError500 }); // Отправляем ошибку
     });
 };
 
@@ -55,18 +60,22 @@ const updateUser = (req, res) => {
     .then((data) => {
       if (!data) {
         // Если data равен null, значит пользователь с указанным _id не найден
-        return res.status(404).send({ message: ErrorMessages.UsersMe404 });
+        return res.status(http2.constants.HTTP_STATUS_NOT_FOUND)
+          .send({ message: ErrorMessages.UsersMe404 });
       }
       if (!name && !about) {
-        return res.status(400).send({ message: ErrorMessages.UsersMe400 });
+        return res.status(http2.constants.HTTP_STATUS_BAD_REQUEST)
+          .send({ message: ErrorMessages.UsersMe400 });
       }
-      return res.status(200).send(data);
+      return res.status(http2.constants.HTTP_STATUS_OK).send(data);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: ErrorMessages.UsersMe400 });
+        return res.status(http2.constants.HTTP_STATUS_BAD_REQUEST)
+          .send({ message: ErrorMessages.UsersMe400 });
       }
-      return res.status(500).send({ message: ErrorMessages.ServerError500 });
+      return res.status(http2.constants.HTTP_STATUS_INTERNAL_SERVER_ERROR)
+        .send({ message: ErrorMessages.ServerError500 });
     });
 };
 
@@ -80,15 +89,18 @@ const updateAvatar = (req, res) => {
     .then((data) => {
       if (!data) {
         // Если data равен null, значит пользователь с указанным _id не найден
-        return res.status(404).send({ message: ErrorMessages.UsersAvatar404 });
+        return res.status(http2.constants.HTTP_STATUS_NOT_FOUND)
+          .send({ message: ErrorMessages.UsersAvatar404 });
       }
       if (!avatar) {
-        return res.status(400).send({ message: ErrorMessages.UsersAvatar400 });
+        return res.status(http2.constants.HTTP_STATUS_BAD_REQUEST)
+          .send({ message: ErrorMessages.UsersAvatar400 });
       }
-      return res.status(200).send(data);
+      return res.status(http2.constants.HTTP_STATUS_OK).send(data);
     })
 
-    .catch(() => res.status(500).send({ message: ErrorMessages.ServerError500 }));
+    .catch(() => res.status(http2.constants.HTTP_STATUS_INTERNAL_SERVER_ERROR)
+      .send({ message: ErrorMessages.ServerError500 }));
 };
 
 module.exports = {

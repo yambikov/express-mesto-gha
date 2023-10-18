@@ -1,3 +1,4 @@
+const http2 = require('http2');
 const CardModel = require('../models/card');
 const { ErrorMessages } = require('../utils/errors');
 
@@ -7,22 +8,25 @@ const createCard = (req, res) => {
 
   return CardModel.create({ name, link, owner: req.user._id })
     .then((data) => {
-      res.status(201).send(data);
+      res.status(http2.constants.HTTP_STATUS_CREATED).send(data);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: ErrorMessages.Cards400 });
+        return res.status(http2.constants.HTTP_STATUS_BAD_REQUEST)
+          .send({ message: ErrorMessages.Cards400 });
       }
-      return res.status(500).send({ message: ErrorMessages.ServerError500 });
+      return res.status(http2.constants.HTTP_STATUS_INTERNAL_SERVER_ERROR)
+        .send({ message: ErrorMessages.ServerError500 });
     });
 };
 
 const getCards = (req, res) => {
   CardModel.find()
     .then((data) => {
-      res.status(200).send(data);
+      res.status(http2.constants.HTTP_STATUS_OK).send(data);
     })
-    .catch(() => res.status(500).send({ message: ErrorMessages.ServerError500 }));
+    .catch(() => res.status(http2.constants.HTTP_STATUS_INTERNAL_SERVER_ERROR)
+      .send({ message: ErrorMessages.ServerError500 }));
 };
 
 const deleteCard = (req, res) => {
@@ -30,15 +34,18 @@ const deleteCard = (req, res) => {
   CardModel.findByIdAndDelete(cardId)
     .then((data) => {
       if (!data) {
-        return res.status(404).send({ message: ErrorMessages.CardsId404 });
+        return res.status(http2.constants.HTTP_STATUS_NOT_FOUND)
+          .send({ message: ErrorMessages.CardsId404 });
       }
-      return res.status(200).send(data);
+      return res.status(http2.constants.HTTP_STATUS_OK).send(data);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(400).send({ message: ErrorMessages.Error400 });
+        return res.status(http2.constants.HTTP_STATUS_BAD_REQUEST)
+          .send({ message: ErrorMessages.Error400 });
       }
-      return res.status(500).send({ message: ErrorMessages.ServerError500 }); // Отправляем ошибку
+      return res.status(http2.constants.HTTP_STATUS_INTERNAL_SERVER_ERROR)
+        .send({ message: ErrorMessages.ServerError500 }); // Отправляем ошибку
     });
 };
 
@@ -50,16 +57,19 @@ const addCardLike = (req, res) => {
   )
     .then((data) => {
       if (!data) {
-        return res.status(404).send({ message: ErrorMessages.CardsLike404 });
+        return res.status(http2.constants.HTTP_STATUS_NOT_FOUND)
+          .send({ message: ErrorMessages.CardsLike404 });
       }
-      return res.status(200).send(data);
+      return res.status(http2.constants.HTTP_STATUS_OK).send(data);
     })
 
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(400).send({ message: ErrorMessages.CardsLike400 });
+        return res.status(http2.constants.HTTP_STATUS_BAD_REQUEST)
+          .send({ message: ErrorMessages.CardsLike400 });
       }
-      return res.status(500).send({ message: ErrorMessages.ServerError500 }); // Отправляем ошибку
+      return res.status(http2.constants.HTTP_STATUS_INTERNAL_SERVER_ERROR)
+        .send({ message: ErrorMessages.ServerError500 }); // Отправляем ошибку
     });
 };
 
@@ -71,15 +81,18 @@ const removeCardLike = (req, res) => {
   )
     .then((data) => {
       if (!data) {
-        return res.status(404).send({ message: ErrorMessages.CardsLike404 });
+        return res.status(http2.constants.HTTP_STATUS_NOT_FOUND)
+          .send({ message: ErrorMessages.CardsLike404 });
       }
-      return res.status(200).send(data);
+      return res.status(http2.constants.HTTP_STATUS_OK).send(data);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(400).send({ message: ErrorMessages.CardsLike400 });
+        return res.status(http2.constants.HTTP_STATUS_BAD_REQUEST)
+          .send({ message: ErrorMessages.CardsLike400 });
       }
-      return res.status(500).send({ message: ErrorMessages.ServerError500 }); // Отправляем ошибку
+      return res.status(http2.constants.HTTP_STATUS_INTERNAL_SERVER_ERROR)
+        .send({ message: ErrorMessages.ServerError500 }); // Отправляем ошибку
     });
 };
 
