@@ -57,12 +57,12 @@ const deleteCard = async (req, res) => {
 
     // Если запрос вернул данные, отправляем успешный ответ
     return res.status(http2.constants.HTTP_STATUS_OK).send(data);
-  } catch (error) {
-    if (error.name === 'DocumentNotFoundError') {
+  } catch (err) {
+    if (err.name === 'DocumentNotFoundError') {
       // Если не найдено документа с указанным ID, отправляем 404 ошибку
       return res.status(http2.constants.HTTP_STATUS_NOT_FOUND)
         .send({ message: ErrorMessages.CardsId404 });
-    } if (error.name === 'CastError') {
+    } if (err.name === 'CastError') {
       // Если неправильный формат ID, отправляем 400 ошибку
       return res.status(http2.constants.HTTP_STATUS_BAD_REQUEST)
         .send({ message: ErrorMessages.Error400 });
