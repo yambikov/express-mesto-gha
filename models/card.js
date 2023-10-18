@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 const mongoose = require('mongoose');
 
 const cardSchema = new mongoose.Schema({
@@ -19,6 +18,7 @@ const cardSchema = new mongoose.Schema({
   },
   likes: [{
     type: mongoose.Schema.Types.ObjectId, // связь карточки с моделью пользователя
+    ref: 'user',
     default: [],
   }],
   createdAt: {

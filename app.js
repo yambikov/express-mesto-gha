@@ -1,4 +1,4 @@
-const express = require('express'); // eslint-disable-next-line import/no-extraneous-dependencies
+const express = require('express');
 const mongoose = require('mongoose');
 const userRouter = require('./routes/users'); // импортируем роуты юзера
 const cardsRouter = require('./routes/cards'); // импортируем роуты карточек
