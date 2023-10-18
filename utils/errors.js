@@ -11,6 +11,7 @@ module.exports.ErrorMessages = {
   CardsLike404: 'Передан несуществующий _id карточки',
   ServerError500: 'Ошибка по умолчанию',
   Error400: 'Переданы некорректные данные',
+  Error404: 'Запрашиваемый ресурс не найден',
 };
 
 // http2.constants.HTTP_STATUS_CREATED; // 201 Created
