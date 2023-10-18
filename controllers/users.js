@@ -1,4 +1,4 @@
-const http2 = require('http2');
+// const http2 = require('http2');
 // console.log(http2.constants.HTTP2_HEADER_STATUS);
 // https://nodejs.org/api/http2.html#http2constants
 const UserModel = require('../models/user');

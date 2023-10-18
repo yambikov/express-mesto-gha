@@ -16,34 +16,29 @@ const createCard = (req, res) => {
       return res.status(500).send({ message: ErrorMessages.ServerError500 });
     });
 };
-// eslint-disable-next-line no-unused-vars
+
 const getCards = (req, res) => {
   CardModel.find()
     .then((data) => {
       res.status(200).send(data);
     })
-    // eslint-disable-next-line arrow-body-style, no-unused-vars
-    .catch((err) => {
-      return res.status(500).send({ message: ErrorMessages.ServerError500 });
-    });
+    .catch(() => res.status(500).send({ message: ErrorMessages.ServerError500 }));
 };
 
 const deleteCard = (req, res) => {
   const { cardId } = req.params;
   CardModel.findByIdAndDelete(cardId)
-    // eslint-disable-next-line consistent-return
     .then((data) => {
       if (!data) {
         return res.status(404).send({ message: ErrorMessages.CardsId404 });
       }
-      res.status(200).send(data);
+      return res.status(200).send(data);
     })
-    // eslint-disable-next-line consistent-return, no-unused-vars
     .catch((err) => {
       if (err.name === 'CastError') {
         return res.status(400).send({ message: ErrorMessages.Error400 });
       }
-      res.status(500).send({ message: ErrorMessages.ServerError500 }); // Отправляем ошибку
+      return res.status(500).send({ message: ErrorMessages.ServerError500 }); // Отправляем ошибку
     });
 };
 
@@ -53,19 +48,18 @@ const addCardLike = (req, res) => {
     { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
     { new: true },
   )
-    // eslint-disable-next-line consistent-return
     .then((data) => {
       if (!data) {
         return res.status(404).send({ message: ErrorMessages.CardsLike404 });
       }
-      res.status(200).send(data);
+      return res.status(200).send(data);
     })
-    // eslint-disable-next-line consistent-return, no-unused-vars
+
     .catch((err) => {
       if (err.name === 'CastError') {
         return res.status(400).send({ message: ErrorMessages.CardsLike400 });
       }
-      res.status(500).send({ message: ErrorMessages.ServerError500 }); // Отправляем ошибку
+      return res.status(500).send({ message: ErrorMessages.ServerError500 }); // Отправляем ошибку
     });
 };
 
@@ -75,19 +69,17 @@ const removeCardLike = (req, res) => {
     { $pull: { likes: req.user._id } }, // убрать _id из массива
     { new: true },
   )
-    // eslint-disable-next-line consistent-return
     .then((data) => {
       if (!data) {
         return res.status(404).send({ message: ErrorMessages.CardsLike404 });
       }
-      res.status(200).send(data);
+      return res.status(200).send(data);
     })
-    // eslint-disable-next-line consistent-return
     .catch((err) => {
       if (err.name === 'CastError') {
         return res.status(400).send({ message: ErrorMessages.CardsLike400 });
       }
-      res.status(500).send({ message: ErrorMessages.ServerError500 }); // Отправляем ошибку
+      return res.status(500).send({ message: ErrorMessages.ServerError500 }); // Отправляем ошибку
     });
 };
 
