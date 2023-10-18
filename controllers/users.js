@@ -20,7 +20,6 @@ const createUser = (req, res) => {
 };
 
 const getUsers = (req, res) => {
-  console.log(http2.constants.HTTP_STATUS_OK);
   UserModel.find()
     .then((data) => {
       res.status(http2.constants.HTTP_STATUS_OK).send(data);
@@ -58,15 +57,15 @@ const updateUser = (req, res) => {
   })
 
     .then((data) => {
-      if (!data) {
-        // Если data равен null, значит пользователь с указанным _id не найден
-        return res.status(http2.constants.HTTP_STATUS_NOT_FOUND)
-          .send({ message: ErrorMessages.UsersMe404 });
-      }
-      if (!name && !about) {
-        return res.status(http2.constants.HTTP_STATUS_BAD_REQUEST)
-          .send({ message: ErrorMessages.UsersMe400 });
-      }
+      // if (!data) {
+      //   // Если data равен null, значит пользователь с указанным _id не найден
+      //   return res.status(http2.constants.HTTP_STATUS_NOT_FOUND)
+      //     .send({ message: ErrorMessages.UsersMe404 });
+      // }
+      // if (!name && !about) {
+      //   return res.status(http2.constants.HTTP_STATUS_BAD_REQUEST)
+      //     .send({ message: ErrorMessages.UsersMe400 });
+      // }
       return res.status(http2.constants.HTTP_STATUS_OK).send(data);
     })
     .catch((err) => {
