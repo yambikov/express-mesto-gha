@@ -33,11 +33,12 @@ const deleteCard = (req, res) => {
   const { cardId } = req.params;
   CardModel.findByIdAndDelete(cardId)
     .then((data) => {
-      if (!data) {
-        return res.status(http2.constants.HTTP_STATUS_NOT_FOUND)
-          .send({ message: ErrorMessages.CardsId404 });
-      }
-      return res.status(http2.constants.HTTP_STATUS_OK).send(data);
+      // if (!data) {
+      //   return res.status(http2.constants.HTTP_STATUS_NOT_FOUND)
+      //     .send({ message: ErrorMessages.CardsId404 });
+      // }
+      // return
+      res.status(http2.constants.HTTP_STATUS_OK).send(data);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -56,11 +57,12 @@ const addCardLike = (req, res) => {
     { new: true },
   )
     .then((data) => {
-      if (!data) {
-        return res.status(http2.constants.HTTP_STATUS_NOT_FOUND)
-          .send({ message: ErrorMessages.CardsLike404 });
-      }
-      return res.status(http2.constants.HTTP_STATUS_OK).send(data);
+      // if (!data) {
+      //   return res.status(http2.constants.HTTP_STATUS_NOT_FOUND)
+      //     .send({ message: ErrorMessages.CardsLike404 });
+      // }
+      // return
+      res.status(http2.constants.HTTP_STATUS_OK).send(data);
     })
 
     .catch((err) => {
@@ -80,11 +82,13 @@ const removeCardLike = (req, res) => {
     { new: true },
   )
     .then((data) => {
-      if (!data) {
-        return res.status(http2.constants.HTTP_STATUS_NOT_FOUND)
-          .send({ message: ErrorMessages.CardsLike404 });
-      }
-      return res.status(http2.constants.HTTP_STATUS_OK).send(data);
+      // if (!data) {
+      //   return
+      //   res.status(http2.constants.HTTP_STATUS_NOT_FOUND)
+      //     .send({ message: ErrorMessages.CardsLike404 });
+      // }
+      // return
+      res.status(http2.constants.HTTP_STATUS_OK).send(data);
     })
     .catch((err) => {
       if (err.name === 'CastError') {

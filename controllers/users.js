@@ -32,11 +32,12 @@ const getUserById = (req, res) => {
   const { userId } = req.params;
   UserModel.findById(userId)
     .then((data) => {
-      if (!data) {
-        return res.status(http2.constants.HTTP_STATUS_NOT_FOUND)
-          .send({ message: ErrorMessages.UserId404 });
-      }
-      return res.status(http2.constants.HTTP_STATUS_OK).send(data);
+    //   if (!data) {
+    //     return res.status(http2.constants.HTTP_STATUS_NOT_FOUND)
+    //       .send({ message: ErrorMessages.UserId404 });
+    //   }
+    //   return
+      res.status(http2.constants.HTTP_STATUS_OK).send(data);
     })
 
     .catch((err) => {
@@ -66,7 +67,8 @@ const updateUser = (req, res) => {
       //   return res.status(http2.constants.HTTP_STATUS_BAD_REQUEST)
       //     .send({ message: ErrorMessages.UsersMe400 });
       // }
-      return res.status(http2.constants.HTTP_STATUS_OK).send(data);
+      // return
+      res.status(http2.constants.HTTP_STATUS_OK).send(data);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -86,16 +88,17 @@ const updateAvatar = (req, res) => {
   })
 
     .then((data) => {
-      if (!data) {
-        // Если data равен null, значит пользователь с указанным _id не найден
-        return res.status(http2.constants.HTTP_STATUS_NOT_FOUND)
-          .send({ message: ErrorMessages.UsersAvatar404 });
-      }
-      if (!avatar) {
-        return res.status(http2.constants.HTTP_STATUS_BAD_REQUEST)
-          .send({ message: ErrorMessages.UsersAvatar400 });
-      }
-      return res.status(http2.constants.HTTP_STATUS_OK).send(data);
+      // if (!data) {
+      //   // Если data равен null, значит пользователь с указанным _id не найден
+      //   return res.status(http2.constants.HTTP_STATUS_NOT_FOUND)
+      //     .send({ message: ErrorMessages.UsersAvatar404 });
+      // }
+      // if (!avatar) {
+      //   return res.status(http2.constants.HTTP_STATUS_BAD_REQUEST)
+      //     .send({ message: ErrorMessages.UsersAvatar400 });
+      // }
+      // return
+      res.status(http2.constants.HTTP_STATUS_OK).send(data);
     })
 
     .catch(() => res.status(http2.constants.HTTP_STATUS_INTERNAL_SERVER_ERROR)
