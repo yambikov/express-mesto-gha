@@ -57,16 +57,6 @@ const updateUser = (req, res) => {
   })
 
     .then((data) => {
-      // if (!data) {
-      //   // Если data равен null, значит пользователь с указанным _id не найден
-      //   return res.status(http2.constants.HTTP_STATUS_NOT_FOUND)
-      //     .send({ message: ErrorMessages.UsersMe404 });
-      // }
-      // if (!name && !about) {
-      //   return res.status(http2.constants.HTTP_STATUS_BAD_REQUEST)
-      //     .send({ message: ErrorMessages.UsersMe400 });
-      // }
-      // return
       res.status(http2.constants.HTTP_STATUS_OK).send(data);
     })
     .catch((err) => {
@@ -84,24 +74,19 @@ const updateAvatar = (req, res) => {
 
   UserModel.findByIdAndUpdate(req.user._id, { avatar }, {
     new: true, // обработчик then получит на вход обновлённую запись
+    runValidators: true,
   })
-
     .then((data) => {
-      // if (!data) {
-      //   // Если data равен null, значит пользователь с указанным _id не найден
-      //   return res.status(http2.constants.HTTP_STATUS_NOT_FOUND)
-      //     .send({ message: ErrorMessages.UsersAvatar404 });
-      // }
-      // if (!avatar) {
-      //   return res.status(http2.constants.HTTP_STATUS_BAD_REQUEST)
-      //     .send({ message: ErrorMessages.UsersAvatar400 });
-      // }
-      // return
       res.status(http2.constants.HTTP_STATUS_OK).send(data);
     })
-
-    .catch(() => res.status(http2.constants.HTTP_STATUS_INTERNAL_SERVER_ERROR)
-      .send({ message: ErrorMessages.ServerError500 }));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return res.status(http2.constants.HTTP_STATUS_BAD_REQUEST)
+          .send({ message: ErrorMessages.UsersMe400 });
+      }
+      return res.status(http2.constants.HTTP_STATUS_INTERNAL_SERVER_ERROR)
+        .send({ message: ErrorMessages.ServerError500 });
+    });
 };
 
 module.exports = {

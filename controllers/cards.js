@@ -29,26 +29,6 @@ const getCards = (req, res) => {
       .send({ message: ErrorMessages.ServerError500 }));
 };
 
-// const deleteCard = (req, res) => {
-//   const { cardId } = req.params;
-//   CardModel.findByIdAndDelete(cardId)
-//     .then((data) => {
-//       if (!data) {
-//         return res.status(http2.constants.HTTP_STATUS_NOT_FOUND)
-//           .send({ message: ErrorMessages.CardsId404 });
-//       }
-//       return res.status(http2.constants.HTTP_STATUS_OK).send(data);
-//     })
-//     .catch((err) => {
-//       if (err.name === 'CastError') {
-//         return res.status(http2.constants.HTTP_STATUS_BAD_REQUEST)
-//           .send({ message: ErrorMessages.Error400 });
-//       }
-//       return res.status(http2.constants.HTTP_STATUS_INTERNAL_SERVER_ERROR)
-//         .send({ message: ErrorMessages.ServerError500 }); // Отправляем ошибку
-//     });
-// };
-
 const deleteCard = async (req, res) => {
   const { cardId } = req.params;
 
