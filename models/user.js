@@ -4,19 +4,22 @@ const validator = require('validator');
 const userSchema = new mongoose.Schema({
   name: {
     type: String, // тип данных - строка
-    required: true, // обязательное поле
+    // required: true, // обязательное поле
     minlength: 2, // минимальная длина строки
     maxlength: 30, // максимальная длина строки
+    default: 'Жак-Ив Кусто', // Значение по умолчанию для name
   },
   about: {
     type: String,
-    required: true,
+    // required: true,
     minlength: 2,
     maxlength: 30,
+    default: 'Исследователь',
   },
   avatar: {
     type: String,
-    required: true,
+    // required: true,
+    default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png'
   },
   email: {
     type: String,
@@ -24,7 +27,7 @@ const userSchema = new mongoose.Schema({
     unique: true,
     validate: {
       validator: (value) => validator.isEmail(value),
-      message: 'Неправильный формат email',
+      message: 'Неправильный формат почты',
     },
   },
   password: {

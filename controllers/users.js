@@ -1,11 +1,17 @@
 const http2 = require('http2');
+const bcrypt = require('bcryptjs'); // Добавляем bcryptjs
 const UserModel = require('../models/user');
 const { ErrorMessages } = require('../utils/errors');
 
 const createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
+  const { name, about, avatar, email, password } = req.body;
 
-  return UserModel.create({ name, about, avatar }) // Создаём нового пользователя
+  // Хешируем пароль
+  bcrypt.hash(password, 10) // 10 - количество раундов хеширования
+    .then((hashedPassword) => {
+      // Создаем нового пользователя с хешированным паролем
+      return UserModel.create({ name, about, avatar, email, password: hashedPassword });
+    })
     .then((data) => {
       res.status(http2.constants.HTTP_STATUS_CREATED).send(data);
     })
@@ -18,6 +24,9 @@ const createUser = (req, res) => {
         .send({ message: ErrorMessages.ServerError500 });
     });
 };
+
+// Остальной код остается без изменений
+
 
 const getUsers = (req, res) => {
   UserModel.find()
