@@ -2,6 +2,7 @@ const http2 = require('http2');
 const bcrypt = require('bcryptjs'); // Добавляем bcryptjs
 const UserModel = require('../models/user');
 const { ErrorMessages } = require('../utils/errors');
+const jwt = require('jsonwebtoken');
 
 const createUser = (req, res) => {
   const { name, about, avatar, email, password } = req.body;
@@ -25,7 +26,23 @@ const createUser = (req, res) => {
     });
 };
 
-// Остальной код остается без изменений
+const login = (req, res) => {
+  const { email, password } = req.body;
+
+  return UserModel.findUserByCredentials(email, password)
+    .then((user) => {
+      // создадим токен
+      const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
+
+      // вернём токен
+      res.send({ token });
+    })
+    .catch((err) => {
+      res
+        .status(401)
+        .send({ message: err.message });
+    });
+};
 
 
 const getUsers = (req, res) => {
@@ -104,4 +121,5 @@ module.exports = {
   getUserById,
   updateUser,
   updateAvatar,
+  login
 };
