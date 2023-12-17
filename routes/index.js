@@ -1,3 +1,5 @@
+// routes/index.js
+
 const router = require('express').Router();
 const http2 = require('http2');
 const userRouter = require('./users'); // импортируем роуты юзера

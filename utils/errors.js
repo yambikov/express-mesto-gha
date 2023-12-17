@@ -1,3 +1,5 @@
+// utils/errors.js
+
 module.exports.ErrorMessages = {
   Users400: 'Переданы некорректные данные при создании пользователя',
   UserId404: 'Пользователь по указанному _id не найден',

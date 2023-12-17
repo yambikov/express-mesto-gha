@@ -1,3 +1,5 @@
+// routes/cards.js
+
 const cardsRouter = require('express').Router(); // создаем роуты карточек
 const {
   createCard,

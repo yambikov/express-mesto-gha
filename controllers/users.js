@@ -1,3 +1,5 @@
+// controllers/users.js
+
 const http2 = require('http2');
 const bcrypt = require('bcryptjs'); // Добавляем bcryptjs
 const UserModel = require('../models/user');
@@ -28,6 +30,8 @@ const createUser = (req, res) => {
 
 const login = (req, res) => {
   const { email, password } = req.body;
+  console.log('123');
+
 
   return UserModel.findUserByCredentials(email, password)
     .then((user) => {
@@ -116,10 +120,11 @@ const updateAvatar = (req, res) => {
 };
 
 module.exports = {
+  login,
   createUser,
   getUsers,
   getUserById,
   updateUser,
   updateAvatar,
-  login
 };
+
