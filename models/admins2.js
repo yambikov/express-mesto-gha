@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
 
-const adminSchema = new mongoose.Schema({
+const adminSchema2 = new mongoose.Schema({
   name: {
     type: String, // тип данных - строка
     // required: true, // обязательное поле
@@ -41,7 +41,7 @@ const adminSchema = new mongoose.Schema({
 
 });
 
-adminSchema.statics.findUserByCredentials = function (email, password) {
+adminSchema2.statics.findUserByCredentials = function (email, password) {
   return this.findOne({ email })
     .then((user) => {
       if (!user) {
@@ -62,4 +62,4 @@ adminSchema.statics.findUserByCredentials = function (email, password) {
 
 
 
-module.exports = mongoose.model('user', adminSchema);
+module.exports = mongoose.model('admins2', adminSchema2);

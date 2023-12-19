@@ -17,10 +17,10 @@ const PORT = 3000;
 
 app.use(express.json()); // to support JSON-encoded bodies
 
-app.post('/signin', login);
-app.post('/signup', createUser);
+// app.post('/signin', login);
+// app.post('/signup', createUser);
 
-app.use(auth);
+// app.use(auth);
 
 
 
