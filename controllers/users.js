@@ -8,7 +8,6 @@ const jwt = require('jsonwebtoken');
 
 const createUser = (req, res) => {
   const { name, about, avatar, email, password } = req.body;
-
   // Хешируем пароль
   bcrypt.hash(password, 10) // 10 - количество раундов хеширования
     .then((hashedPassword) => {
