@@ -2,54 +2,98 @@
 
 const http2 = require('http2');
 const bcrypt = require('bcryptjs'); // Добавляем bcryptjs
-const UserModel = require('../models/user');
+const userModel = require('../models/user');
 const { ErrorMessages } = require('../utils/errors');
 const jwt = require('jsonwebtoken');
 
 const createUser = (req, res) => {
   const { name, about, avatar, email, password } = req.body;
-  // Хешируем пароль
-  bcrypt.hash(password, 10) // 10 - количество раундов хеширования
+
+  if (!email || !password) {
+    return res.status(400).send({ message: 'Email или пароль не может быть пустым' });
+  };
+
+  bcrypt.hash(password, 10)
     .then((hashedPassword) => {
-      // Создаем нового пользователя с хешированным паролем
-      return UserModel.create({ name, about, avatar, email, password: hashedPassword });
+      return userModel.create({ name, about, avatar, email, password: hashedPassword })
     })
-    .then((data) => {
-      res.status(http2.constants.HTTP_STATUS_CREATED).send(data);
+    .then((admin) => {
+      return res.status(201).send(admin);
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        return res.status(http2.constants.HTTP_STATUS_BAD_REQUEST)
-          .send({ message: ErrorMessages.Users400 });
+      if (err.code === 11000) {
+        return res.status(409).send({ message: 'Такой пользователь уже существует' });
       }
-      return res.status(http2.constants.HTTP_STATUS_INTERNAL_SERVER_ERROR)
-        .send({ message: ErrorMessages.ServerError500 });
+      console.log(err);
+      return res.status(500).send({ message: err.message });
     });
-};
+}
 
 const login = (req, res) => {
   const { email, password } = req.body;
-  console.log('123');
 
+  if (!email || !password) {
+    return res.status(400).send({ message: 'Email или пароль не может быть пустым' });
+  };
 
-  return UserModel.findUserByCredentials(email, password)
+  userModel.findOne({ email })
     .then((user) => {
-      // создадим токен
-      const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
-
-      // вернём токен
-      res.send({ token });
-    })
-    .catch((err) => {
-      res
-        .status(401)
-        .send({ message: err.message });
+      if (!user) {
+        return res.status(401).send({ message: 'Такого пользователя не существует' });
+      }
+      bcrypt.compare(password, user.password, function (err, isValidPassword) {
+        if (!isValidPassword) {
+          return res.status(401).send({ message: 'Неверный пароль' });
+        }
+        return res.status(200).send({ message: 'Вы успешно вошли' });
+      });
     });
-};
+}
+
+// const createUser = (req, res) => {
+//   const { name, about, avatar, email, password } = req.body;
+//   // Хешируем пароль
+//   bcrypt.hash(password, 10) // 10 - количество раундов хеширования
+//     .then((hashedPassword) => {
+//       // Создаем нового пользователя с хешированным паролем
+//       return UserModel.create({ name, about, avatar, email, password: hashedPassword });
+//     })
+//     .then((data) => {
+//       res.status(http2.constants.HTTP_STATUS_CREATED).send(data);
+//     })
+//     .catch((err) => {
+//       if (err.name === 'ValidationError') {
+//         return res.status(http2.constants.HTTP_STATUS_BAD_REQUEST)
+//           .send({ message: ErrorMessages.Users400 });
+//       }
+//       return res.status(http2.constants.HTTP_STATUS_INTERNAL_SERVER_ERROR)
+//         .send({ message: ErrorMessages.ServerError500 });
+//     });
+// };
+
+// const login = (req, res) => {
+//   const { email, password } = req.body;
+//   console.log('123');
+
+
+//   return UserModel.findUserByCredentials(email, password)
+//     .then((user) => {
+//       // создадим токен
+//       const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
+
+//       // вернём токен
+//       res.send({ token });
+//     })
+//     .catch((err) => {
+//       res
+//         .status(401)
+//         .send({ message: err.message });
+//     });
+// };
 
 
 const getUsers = (req, res) => {
-  UserModel.find()
+  userModel.find()
     .then((data) => {
       res.status(http2.constants.HTTP_STATUS_OK).send(data);
     })
@@ -59,7 +103,7 @@ const getUsers = (req, res) => {
 
 const getUserById = (req, res) => {
   const { userId } = req.params;
-  UserModel.findById(userId)
+  userModel.findById(userId)
     .then((data) => {
       if (!data) {
         return res.status(http2.constants.HTTP_STATUS_NOT_FOUND)
@@ -80,7 +124,7 @@ const getUserById = (req, res) => {
 
 const updateUser = (req, res) => {
   const { name, about } = req.body;
-  UserModel.findByIdAndUpdate(req.user._id, { name, about }, {
+  userModel.findByIdAndUpdate(req.user._id, { name, about }, {
     new: true, // обработчик then получит на вход обновлённую запись
     runValidators: true, // данные будут валидированы перед изменением
   })
@@ -101,7 +145,7 @@ const updateUser = (req, res) => {
 const updateAvatar = (req, res) => {
   const { avatar } = req.body;
 
-  UserModel.findByIdAndUpdate(req.user._id, { avatar }, {
+  userModel.findByIdAndUpdate(req.user._id, { avatar }, {
     new: true, // обработчик then получит на вход обновлённую запись
     runValidators: true,
   })
@@ -119,8 +163,8 @@ const updateAvatar = (req, res) => {
 };
 
 module.exports = {
-  login,
   createUser,
+  login,
   getUsers,
   getUserById,
   updateUser,

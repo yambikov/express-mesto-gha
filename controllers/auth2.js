@@ -1,7 +1,7 @@
 const adminModel2 = require('../models/admins2');
 
 const bcrypt = require('bcryptjs');
-const saltRounds = 10;
+//const saltRounds = 10;
 
 
 const register2 = (req, res) => {
