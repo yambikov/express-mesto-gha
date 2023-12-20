@@ -1,5 +1,9 @@
 const adminModel2 = require('../models/admins2');
 
+const bcrypt = require('bcryptjs');
+const saltRounds = 10;
+
+
 const register2 = (req, res) => {
   const { email, password } = req.body;
 
@@ -7,7 +11,10 @@ const register2 = (req, res) => {
     return res.status(400).send({ message: 'Email или пароль не может быть пустым' });
   };
 
-  adminModel2.create({ email, password })
+  bcrypt.hash(password, 10)
+    .then((hashedPassword) => {
+      return adminModel2.create({ email, password: hashedPassword })
+    })
     .then((admin) => {
       return res.status(201).send(admin);
     })
