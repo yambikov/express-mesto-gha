@@ -2,29 +2,61 @@
 
 const jwt = require('jsonwebtoken');
 
-const auth = (req, res, next) => {
-  const { authorization } = req.headers;
-
-  if (!authorization || !authorization.startsWith('Bearer ')) {
-    return res
-      .status(401)
-      .send({ message: 'Необходима авторизация' });
-  }
-
-  const token = authorization.replace('Bearer ', '');
-  let payload;
-
-  try {
-    payload = jwt.verify(token, 'some-secret-key');
-  } catch (err) {
-    return res
-      .status(401)
-      .send({ message: 'Необходима авторизация' });
-  }
-
-  req.user = payload; // записываем пейлоуд в объект запроса
-
-  next(); // пропускаем запрос дальше
+const getJwtToken = (payload) => {
+  return jwt.sign(payload, 'some-secret-key');
 };
 
-module.exports = auth;
+const isAutorized = (token) => {
+  return jwt.verify(token, 'some-secret-key', function (err, decoded) {
+    if (err) {
+      return false;
+    }
+    return userModel.findById(decoded._id)
+      .then((user) => {
+        return Boolean(user)
+      })
+
+  });
+}
+
+module.exports = {
+  getJwtToken,
+  isAutorized,
+}
+
+
+
+
+
+
+
+
+
+
+
+// const auth = (req, res, next) => {
+//   const { authorization } = req.headers;
+
+//   if (!authorization || !authorization.startsWith('Bearer ')) {
+//     return res
+//       .status(401)
+//       .send({ message: 'Необходима авторизация' });
+//   }
+
+//   const token = authorization.replace('Bearer ', '');
+//   let payload;
+
+//   try {
+//     payload = jwt.verify(token, 'some-secret-key');
+//   } catch (err) {
+//     return res
+//       .status(401)
+//       .send({ message: 'Необходима авторизация' });
+//   }
+
+//   req.user = payload; // записываем пейлоуд в объект запроса
+
+//   next(); // пропускаем запрос дальше
+// };
+
+// module.exports = auth;
