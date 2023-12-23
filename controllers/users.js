@@ -5,7 +5,7 @@ const bcrypt = require('bcryptjs'); // Добавляем bcryptjs
 const userModel = require('../models/user');
 const { ErrorMessages } = require('../utils/errors');
 // const jwt = require('jsonwebtoken');
-const { isAuthorized } = require('../middlewares/auth');
+const { generateJwtToken, isAuthorized } = require('../middlewares/auth');
 const MONGO_DUPLICATE_ERROR_CODE = 11000;
 const HASH_SALT_ROUNDS = 10;
 

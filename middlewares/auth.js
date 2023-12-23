@@ -4,8 +4,8 @@ const jwt = require('jsonwebtoken');
 const SECRET_KEY ='some-secret-key';
 const userModel = require('../models/user');
 
-const getJwtToken = (payload) => {
-  return jwt.sign(payload, SECRET_KEY);
+const generateJwtToken = (payload) => {
+  return jwt.sign(payload, SECRET_KEY, { expiresIn: '7d' });
 };
 
 const isAuthorized = (token) => {
@@ -22,7 +22,7 @@ const isAuthorized = (token) => {
 }
 
 module.exports = {
-  getJwtToken,
+  generateJwtToken,
   isAuthorized,
 }
 
