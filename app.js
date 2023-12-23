@@ -3,7 +3,9 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const router = require('./routes');
-// const { login, createUser } = require('./controllers/users');
+
+const { isAuthorized } = require('./middlewares/auth');
+const { login, createUser } = require('./controllers/users');
 // const auth = require('./middlewares/auth');
 
 mongoose.connect('mongodb://localhost:27017/mestodb', {
@@ -29,8 +31,8 @@ app.use((req, res, next) => {
   next();
 });
 
-// app.use('/users', userRouter); // подключаем роуты юзера
-// app.use('/cards', cardsRouter); // подключаем роуты юзера
+app.post('/signin',isAuthorized, login);
+app.post('/signup',isAuthorized, createUser);
 
 // app.patch('/*', (req, res) => res.status(404).send({ message: 'Страница не найдена' }));
 

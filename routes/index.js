@@ -5,7 +5,7 @@ const http2 = require('http2');
 const userRouter = require('./users'); // импортируем роуты юзера
 const cardsRouter = require('./cards'); // импортируем роуты карточек
 const { ErrorMessages } = require('../utils/errors');
-//const authRouter2 = require('./auth2');
+
 
 // router.use('/', authRouter2);
 

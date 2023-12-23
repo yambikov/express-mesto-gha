@@ -8,7 +8,8 @@ const {
   getUserById,
   updateUser,
   updateAvatar,
-} = require('../controllers/users'); // импортируем контроллеры
+} = require('../controllers/users');
+// const { isAuthorized } = require('../middlewares/auth'); // импортируем контроллеры
 
 userRouter.get('/', getUsers); // полный путь /users/ так как в app.use('/users', userRouter);
 userRouter.get('/:userId', getUserById); // полный путь /users/:userId'
@@ -19,7 +20,7 @@ userRouter.get('/:userId', getUserById); // полный путь /users/:userId
 userRouter.patch('/me', updateUser); // полный путь /users/me
 userRouter.patch('/me/avatar', updateAvatar); // полный путь /users/me/avatar
 
-userRouter.post('/signin', login);
-userRouter.post('/signup', createUser);
+// userRouter.post('/signin',isAuthorized, login);
+// userRouter.post('/signup',isAuthorized, createUser);
 
 module.exports = userRouter;
