@@ -4,9 +4,8 @@ const http2 = require('http2');
 const bcrypt = require('bcryptjs'); // Добавляем bcryptjs
 const userModel = require('../models/user');
 const { ErrorMessages } = require('../utils/errors');
-const jwt = require('jsonwebtoken');
+// const jwt = require('jsonwebtoken');
 const { isAuthorized } = require('../middlewares/auth');
-
 
 // registerAdmin // app.post('/signup', createUser);
 const createUser = (req, res) => {
@@ -34,7 +33,7 @@ const createUser = (req, res) => {
 }
 
 // authAdmin // userRouter.post('/signin', login);
-const login = (req, res) => {
+const login = (req, res) => { 
   const { email, password } = req.body;
   console.log("AUTH CONTROLLER");
 
@@ -98,29 +97,29 @@ const login = (req, res) => {
 // };
 
 
-// const getUsers = (req, res) => {
-//   userModel.find()
-//     .then((data) => {
-//       res.status(http2.constants.HTTP_STATUS_OK).send(data);
-//     })
-//     .catch(() => res.status(http2.constants.HTTP_STATUS_INTERNAL_SERVER_ERROR)
-//       .send({ message: ErrorMessages.ServerError500 }));
-// };
-
-const getUsers = async (req, res) => {
-  try {
-    const token = req.headers.authorization;
-    //console.log(req.headers);
-    if (!(await isAuthorized(token))) {
-      return res.status(401).send({ message: 'Необходима авторизация' });
-    }
-
-    const users = await userModel.find();
-    res.status(http2.constants.HTTP_STATUS_OK).send(users);
-  } catch (error) {
-    res.status(http2.constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: ErrorMessages.ServerError500 });
-  }
+const getUsers = (req, res) => {
+  userModel.find()
+    .then((data) => {
+      res.status(http2.constants.HTTP_STATUS_OK).send(data);
+    })
+    .catch(() => res.status(http2.constants.HTTP_STATUS_INTERNAL_SERVER_ERROR)
+      .send({ message: ErrorMessages.ServerError500 }));
 };
+
+// const getUsers = async (req, res) => {
+//   try {
+//     const token = req.headers.authorization;
+//     //console.log(req.headers);
+//     if (!(await isAuthorized(token))) {
+//       return res.status(401).send({ message: 'Необходима авторизация' });
+//     }
+
+//     const users = await userModel.find();
+//     res.status(http2.constants.HTTP_STATUS_OK).send(users);
+//   } catch (error) {
+//     res.status(http2.constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: ErrorMessages.ServerError500 });
+//   }
+// };
 
 
 const getUserById = (req, res) => {
