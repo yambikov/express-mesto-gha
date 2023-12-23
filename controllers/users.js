@@ -6,6 +6,8 @@ const userModel = require('../models/user');
 const { ErrorMessages } = require('../utils/errors');
 // const jwt = require('jsonwebtoken');
 const { isAuthorized } = require('../middlewares/auth');
+const MONGO_DUPLICATE_ERROR_CODE = 11000;
+const HASH_SALT_ROUNDS = 10;
 
 // registerAdmin // app.post('/signup', createUser);
 const createUser = (req, res) => {
@@ -16,7 +18,7 @@ const createUser = (req, res) => {
     return res.status(400).send({ message: 'Email или пароль не может быть пустым' });
   };
 
-  bcrypt.hash(password, 10)
+  bcrypt.hash(password, HASH_SALT_ROUNDS)
     .then((hashedPassword) => {
       return userModel.create({ name, about, avatar, email, password: hashedPassword })
     })
@@ -24,7 +26,7 @@ const createUser = (req, res) => {
       return res.status(201).send(admin);
     })
     .catch((err) => {
-      if (err.code === 11000) {
+      if (err.code === MONGO_DUPLICATE_ERROR_CODE) {
         return res.status(409).send({ message: 'Такой пользователь уже существует' });
       }
       console.log(err);
@@ -33,6 +35,33 @@ const createUser = (req, res) => {
 }
 
 // authAdmin // userRouter.post('/signin', login);
+// const login = async (req, res) => {
+//   try {
+//     const { email, password } = req.body;
+//     console.log("AUTH CONTROLLER");
+
+//     if (!email || !password) {
+//       return res.status(400).send({ message: 'Email или пароль не может быть пустым' });
+//     }
+
+//     const user = await userModel.findOne({ email });
+
+//     if (!user) {
+//       return res.status(401).send({ message: 'Такого пользователя не существует' });
+//     }
+
+//     bcrypt.compare(password, user.password, function (err, isValidPassword) {
+//       if (!isValidPassword) {
+//         return res.status(401).send({ message: 'Неверный пароль' });
+//       }
+//       return res.status(200).send({ message: 'Вы успешно вошли' });
+//     });
+//   } catch (error) {
+//     return res.status(500).send({ message: 'Произошла ошибка при обработке запроса' });
+//   }
+// };
+
+
 const login = (req, res) => { 
   const { email, password } = req.body;
   console.log("AUTH CONTROLLER");
@@ -41,7 +70,7 @@ const login = (req, res) => {
     return res.status(400).send({ message: 'Email или пароль не может быть пустым' });
   };
 
-  userModel.findOne({ email })
+  userModel.findOne({ email }).select('+password') // так как в модели отключили видимость пароля, нужно использовать select('+password')
     .then((user) => {
       if (!user) {
         return res.status(401).send({ message: 'Такого пользователя не существует' });
@@ -98,6 +127,7 @@ const login = (req, res) => {
 
 
 const getUsers = (req, res) => {
+  console.log("getUsers CONTROLLER");
   userModel.find()
     .then((data) => {
       res.status(http2.constants.HTTP_STATUS_OK).send(data);
@@ -124,6 +154,7 @@ const getUsers = (req, res) => {
 
 const getUserById = (req, res) => {
   const { userId } = req.params;
+  console.log("getUserById CONTROLLER");
   userModel.findById(userId)
     .then((data) => {
       if (!data) {
@@ -145,6 +176,7 @@ const getUserById = (req, res) => {
 
 const updateUser = (req, res) => {
   const { name, about } = req.body;
+  console.log("updateUser CONTROLLER");
   userModel.findByIdAndUpdate(req.user._id, { name, about }, {
     new: true, // обработчик then получит на вход обновлённую запись
     runValidators: true, // данные будут валидированы перед изменением
@@ -162,9 +194,10 @@ const updateUser = (req, res) => {
         .send({ message: ErrorMessages.ServerError500 });
     });
 };
-
+//
 const updateAvatar = (req, res) => {
   const { avatar } = req.body;
+  console.log("updateAvatar CONTROLLER");
 
   userModel.findByIdAndUpdate(req.user._id, { avatar }, {
     new: true, // обработчик then получит на вход обновлённую запись
