@@ -1,4 +1,5 @@
 // app.js
+/* eslint-disable */
 
 const express = require('express');
 const mongoose = require('mongoose');
