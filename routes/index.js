@@ -6,13 +6,8 @@ const userRouter = require('./users'); // импортируем роуты юз
 const cardsRouter = require('./cards'); // импортируем роуты карточек
 const { ErrorMessages } = require('../utils/errors');
 
-
-// router.use('/', authRouter2);
-
 router.use('/users', userRouter); // подключаем роуты юзера
 router.use('/cards', cardsRouter); // подключаем роуты карточек
-
-
 
 router.patch('/*', (req, res) => res.status(http2.constants.HTTP_STATUS_NOT_FOUND).send({ message: ErrorMessages.Error404 }));
 

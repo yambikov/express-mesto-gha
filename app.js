@@ -31,8 +31,8 @@ app.use((req, res, next) => {
   next();
 });
 
-app.post('/signin',isAuthorized, login);
-app.post('/signup',isAuthorized, createUser);
+app.post('/signin', isAuthorized, login);
+app.post('/signup', isAuthorized, createUser);
 
 // app.patch('/*', (req, res) => res.status(404).send({ message: 'Страница не найдена' }));
 

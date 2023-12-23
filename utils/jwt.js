@@ -1,13 +1,16 @@
 // middlewares/auth.js
 
 const jwt = require('jsonwebtoken');
-const SECRET_KEY ='some-secret-key';
-// const userModel = require('../models/user');
 
-const generateJwtToken = (payload) => {
-  return jwt.sign(payload, SECRET_KEY, { expiresIn: '7d' });
+const SECRET_KEY = 'some-secret-key';
+
+const generateJwtToken = (payload) => jwt.sign(payload, SECRET_KEY, { expiresIn: '7d' });
+
+module.exports = {
+  generateJwtToken,
 };
 
+// OLD CODE
 // const isAuthorized = (token) => {
 //   return jwt.verify(token, SECRET_KEY, function (err, decoded) {
 //     if (err) {
@@ -20,21 +23,6 @@ const generateJwtToken = (payload) => {
 
 //   });
 // }
-
-module.exports = {
-  generateJwtToken
-  // isAuthorized,
-}
-
-
-
-
-
-
-
-
-
-
 
 // const auth = (req, res, next) => {
 //   const { authorization } = req.headers;

@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema({
   avatar: {
     type: String,
     // required: true,
-    default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png'
+    default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
   },
   email: {
     type: String,
@@ -37,8 +37,8 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     minlength: 8,
-    select: false // не возвращать пароль при запросе
-  }
+    select: false, // не возвращать пароль при запросе
+  },
 
 });
 
@@ -59,8 +59,5 @@ userSchema.statics.findUserByCredentials = function (email, password) {
         });
     });
 };
-
-
-
 
 module.exports = mongoose.model('user', userSchema);

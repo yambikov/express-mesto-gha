@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+
 const SECRET_KEY = 'some-secret-key';
 
 const isAuthorized = (req, res, next) => {
@@ -13,8 +14,8 @@ const isAuthorized = (req, res, next) => {
 
     const validToken = token.replace('Bearer ', '');
     payload = jwt.verify(validToken, SECRET_KEY);
-  } catch (error) { 
-    if (error.message === 'NotAuthenticated') { 
+  } catch (error) {
+    if (error.message === 'NotAuthenticated') {
       return res.status(401).send({ message: 'Неправильные email или пароль' });
     }
     if (error.name === 'JsonWebTokenError') {
@@ -23,9 +24,9 @@ const isAuthorized = (req, res, next) => {
     return res.status(500).send({ message: 'Произошла ошибка' });
   }
   req.user = payload;
-  next();
+  return next();
 };
 
 module.exports = {
-  isAuthorized
-}
+  isAuthorized,
+};
