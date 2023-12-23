@@ -5,26 +5,26 @@ const bcrypt = require('bcryptjs'); // Добавляем bcryptjs
 const userModel = require('../models/user');
 const { ErrorMessages } = require('../utils/errors');
 // const jwt = require('jsonwebtoken');
-const { generateJwtToken, isAuthorized } = require('../middlewares/auth');
+// const { generateJwtToken, isAuthorized } = require('../middlewares/auth');
 const MONGO_DUPLICATE_ERROR_CODE = 11000;
 const HASH_SALT_ROUNDS = 10;
 
 // registerAdmin // app.post('/signup', createUser);
 const createUser = (req, res) => {
-  const { name, about, avatar, email, password } = req.body;
-  console.log("REGISTER CONTROLLER");
+  const {
+    name, about, avatar, email, password,
+  } = req.body;
+  console.log('REGISTER CONTROLLER');
 
   if (!email || !password) {
     return res.status(400).send({ message: 'Email или пароль не может быть пустым' });
-  };
+  }
 
   bcrypt.hash(password, HASH_SALT_ROUNDS)
-    .then((hashedPassword) => {
-      return userModel.create({ name, about, avatar, email, password: hashedPassword })
-    })
-    .then((admin) => {
-      return res.status(201).send(admin);
-    })
+    .then((hashedPassword) => userModel.create({
+      name, about, avatar, email, password: hashedPassword,
+    }))
+    .then((admin) => res.status(201).send(admin))
     .catch((err) => {
       if (err.code === MONGO_DUPLICATE_ERROR_CODE) {
         return res.status(409).send({ message: 'Такой пользователь уже существует' });
@@ -32,7 +32,7 @@ const createUser = (req, res) => {
       console.log(err);
       return res.status(500).send({ message: err.message });
     });
-}
+};
 
 // authAdmin // userRouter.post('/signin', login);
 // const login = async (req, res) => {
@@ -61,28 +61,27 @@ const createUser = (req, res) => {
 //   }
 // };
 
-
-const login = (req, res) => { 
+const login = (req, res) => {
   const { email, password } = req.body;
-  console.log("AUTH CONTROLLER");
+  console.log('AUTH_CONTROLLER');
 
   if (!email || !password) {
     return res.status(400).send({ message: 'Email или пароль не может быть пустым' });
-  };
+  }
 
   userModel.findOne({ email }).select('+password') // так как в модели отключили видимость пароля, нужно использовать select('+password')
     .then((user) => {
       if (!user) {
         return res.status(401).send({ message: 'Такого пользователя не существует' });
       }
-      bcrypt.compare(password, user.password, function (err, isValidPassword) {
+      bcrypt.compare(password, user.password, (err, isValidPassword) => {
         if (!isValidPassword) {
           return res.status(401).send({ message: 'Неверный пароль' });
         }
         return res.status(200).send({ message: 'Вы успешно вошли' });
       });
     });
-}
+};
 
 // const createUser = (req, res) => {
 //   const { name, about, avatar, email, password } = req.body;
@@ -109,7 +108,6 @@ const login = (req, res) => {
 //   const { email, password } = req.body;
 //   console.log('123');
 
-
 //   return UserModel.findUserByCredentials(email, password)
 //     .then((user) => {
 //       // создадим токен
@@ -125,9 +123,8 @@ const login = (req, res) => {
 //     });
 // };
 
-
 const getUsers = (req, res) => {
-  console.log("getUsers CONTROLLER");
+  console.log('getUsers_CONTROLLER');
   userModel.find()
     .then((data) => {
       res.status(http2.constants.HTTP_STATUS_OK).send(data);
@@ -147,14 +144,14 @@ const getUsers = (req, res) => {
 //     const users = await userModel.find();
 //     res.status(http2.constants.HTTP_STATUS_OK).send(users);
 //   } catch (error) {
-//     res.status(http2.constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: ErrorMessages.ServerError500 });
+//     res.status(http2.constants.HTTP_STATUS_INTERNAL_SERVER_ERROR)
+// .send({ message: ErrorMessages.ServerError500 });
 //   }
 // };
 
-
 const getUserById = (req, res) => {
   const { userId } = req.params;
-  console.log("getUserById CONTROLLER");
+  console.log('getUserById CONTROLLER');
   userModel.findById(userId)
     .then((data) => {
       if (!data) {
@@ -176,7 +173,7 @@ const getUserById = (req, res) => {
 
 const updateUser = (req, res) => {
   const { name, about } = req.body;
-  console.log("updateUser CONTROLLER");
+  console.log('updateUser_CONTROLLER');
   userModel.findByIdAndUpdate(req.user._id, { name, about }, {
     new: true, // обработчик then получит на вход обновлённую запись
     runValidators: true, // данные будут валидированы перед изменением
@@ -197,7 +194,7 @@ const updateUser = (req, res) => {
 //
 const updateAvatar = (req, res) => {
   const { avatar } = req.body;
-  console.log("updateAvatar CONTROLLER");
+  console.log('updateAvatar_CONTROLLER');
 
   userModel.findByIdAndUpdate(req.user._id, { avatar }, {
     new: true, // обработчик then получит на вход обновлённую запись
@@ -224,4 +221,3 @@ module.exports = {
   updateUser,
   updateAvatar,
 };
-
