@@ -20,7 +20,7 @@ const createUser = (req, res) => {
     return res.status(400).send({ message: 'Email или пароль не может быть пустым' });
   }
 
-  bcrypt.hash(password, HASH_SALT_ROUNDS)
+  return bcrypt.hash(password, HASH_SALT_ROUNDS)
     .then((hashedPassword) => userModel.create({
       name, about, avatar, email, password: hashedPassword,
     }))
@@ -61,6 +61,7 @@ const createUser = (req, res) => {
 //   }
 // };
 
+// authAdmin // userRouter.post('/signin', login);
 const login = (req, res) => {
   const { email, password } = req.body;
   console.log('AUTH_CONTROLLER');
@@ -69,12 +70,12 @@ const login = (req, res) => {
     return res.status(400).send({ message: 'Email или пароль не может быть пустым' });
   }
 
-  userModel.findOne({ email }).select('+password') // так как в модели отключили видимость пароля, нужно использовать select('+password')
+  return userModel.findOne({ email }).select('+password') // так как в модели отключили видимость пароля, нужно использовать select('+password')
     .then((user) => {
       if (!user) {
         return res.status(401).send({ message: 'Такого пользователя не существует' });
       }
-      bcrypt.compare(password, user.password, (err, isValidPassword) => {
+      return bcrypt.compare(password, user.password, (err, isValidPassword) => {
         if (!isValidPassword) {
           return res.status(401).send({ message: 'Неверный пароль' });
         }
