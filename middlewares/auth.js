@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 
 // const { SECRET_KEY } = process.env;
 // const SECRET_KEY = 'some-secret-key';
-const { SECRET_KEY } = process.env;
+const { SECRET_KEY, NODE_ENV } = process.env;
 // console.log(SECRET_KEY);
 
 const isAuthorized = (req, res, next) => {
@@ -18,7 +18,7 @@ const isAuthorized = (req, res, next) => {
 
     const validToken = token.replace('Bearer ', '');
     // console.log(validToken);
-    payload = jwt.verify(validToken, SECRET_KEY);
+    payload = jwt.verify(validToken, NODE_ENV === 'production' ? SECRET_KEY : 'some-secret-key');
   } catch (error) {
     if (error.message === 'NotAuthenticated') {
       return res.status(401).send({ message: 'Неправильные email или пароль' });
