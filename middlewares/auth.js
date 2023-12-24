@@ -27,6 +27,7 @@ const isAuthorized = (req, res, next) => {
     return res.status(500).send({ message: 'Произошла ошибка' });
   }
   req.user = payload;
+  console.log(req.user.id);
   return next();
 };
 

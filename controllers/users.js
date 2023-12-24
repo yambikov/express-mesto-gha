@@ -4,14 +4,12 @@ const http2 = require('http2');
 const bcrypt = require('bcryptjs'); // Добавляем bcryptjs
 const userModel = require('../models/user');
 const { ErrorMessages } = require('../utils/errors');
-
-// const jwt = require('jsonwebtoken');
 const { generateJwtToken } = require('../utils/jwt');
 
 const MONGO_DUPLICATE_ERROR_CODE = 11000;
 const HASH_SALT_ROUNDS = 10;
 
-// registerAdmin // app.post('/signup', createUser);
+// app.post('/signup', createUser);
 const createUser = (req, res) => {
   const {
     name, about, avatar, email, password,
@@ -36,7 +34,7 @@ const createUser = (req, res) => {
     });
 };
 
-// authAdmin // userRouter.post('/signin', login);
+// userRouter.post('/signin', login);
 const login = (req, res) => {
   const { email, password } = req.body;
   console.log('AUTH_CONTROLLER');
@@ -76,6 +74,7 @@ const getUsers = (req, res) => {
 const getUserById = (req, res) => {
   const { userId } = req.params;
   console.log('getUserById CONTROLLER');
+  console.log(userId);
   userModel.findById(userId)
     .then((data) => {
       if (!data) {
@@ -137,6 +136,30 @@ const updateAvatar = (req, res) => {
     });
 };
 
+const getCurrentUser = (req, res) => {
+  const userId = req.user.id; // Получаем id из аутентифицированного пользователя в объекте запроса
+  // const userId = req;
+  console.log('getCurrentUser_CONTROLLER');
+  console.log(userId);
+
+  userModel.findById(userId)
+    .then((data) => {
+      if (!data) {
+        return res.status(http2.constants.HTTP_STATUS_NOT_FOUND)
+          .send({ message: ErrorMessages.UserId404 });
+      }
+      return res.status(http2.constants.HTTP_STATUS_OK).send(data);
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        return res.status(http2.constants.HTTP_STATUS_BAD_REQUEST)
+          .send({ message: ErrorMessages.Error400 });
+      }
+      return res.status(http2.constants.HTTP_STATUS_INTERNAL_SERVER_ERROR)
+        .send({ message: ErrorMessages.ServerError500 });
+    });
+};
+
 module.exports = {
   createUser,
   login,
@@ -144,86 +167,5 @@ module.exports = {
   getUserById,
   updateUser,
   updateAvatar,
+  getCurrentUser,
 };
-
-// OLD CODE
-// authAdmin // userRouter.post('/signin', login);
-// const login = async (req, res) => {
-//   try {
-//     const { email, password } = req.body;
-//     console.log("AUTH CONTROLLER");
-
-//     if (!email || !password) {
-//       return res.status(400).send({ message: 'Email или пароль не может быть пустым' });
-//     }
-
-//     const user = await userModel.findOne({ email });
-
-//     if (!user) {
-//       return res.status(401).send({ message: 'Такого пользователя не существует' });
-//     }
-
-//     bcrypt.compare(password, user.password, function (err, isValidPassword) {
-//       if (!isValidPassword) {
-//         return res.status(401).send({ message: 'Неверный пароль' });
-//       }
-//       return res.status(200).send({ message: 'Вы успешно вошли' });
-//     });
-//   } catch (error) {
-//     return res.status(500).send({ message: 'Произошла ошибка при обработке запроса' });
-//   }
-// };
-// const createUser = (req, res) => {
-//   const { name, about, avatar, email, password } = req.body;
-//   // Хешируем пароль
-//   bcrypt.hash(password, 10) // 10 - количество раундов хеширования
-//     .then((hashedPassword) => {
-//       // Создаем нового пользователя с хешированным паролем
-//       return UserModel.create({ name, about, avatar, email, password: hashedPassword });
-//     })
-//     .then((data) => {
-//       res.status(http2.constants.HTTP_STATUS_CREATED).send(data);
-//     })
-//     .catch((err) => {
-//       if (err.name === 'ValidationError') {
-//         return res.status(http2.constants.HTTP_STATUS_BAD_REQUEST)
-//           .send({ message: ErrorMessages.Users400 });
-//       }
-//       return res.status(http2.constants.HTTP_STATUS_INTERNAL_SERVER_ERROR)
-//         .send({ message: ErrorMessages.ServerError500 });
-//     });
-// };
-
-// const login = (req, res) => {
-//   const { email, password } = req.body;
-//   console.log('123');
-
-//   return UserModel.findUserByCredentials(email, password)
-//     .then((user) => {
-//       // создадим токен
-//       const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
-
-//       // вернём токен
-//       res.send({ token });
-//     })
-//     .catch((err) => {
-//       res
-//         .status(401)
-//         .send({ message: err.message });
-//     });
-// };
-// const getUsers = async (req, res) => {
-//   try {
-//     const token = req.headers.authorization;
-//     //console.log(req.headers);
-//     if (!(await isAuthorized(token))) {
-//       return res.status(401).send({ message: 'Необходима авторизация' });
-//     }
-
-//     const users = await userModel.find();
-//     res.status(http2.constants.HTTP_STATUS_OK).send(users);
-//   } catch (error) {
-//     res.status(http2.constants.HTTP_STATUS_INTERNAL_SERVER_ERROR)
-// .send({ message: ErrorMessages.ServerError500 });
-//   }
-// };

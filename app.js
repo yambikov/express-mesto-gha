@@ -3,7 +3,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv'); // Импортируем dotenv
-const router = require('./routes');
+// const router = require('./routes');
+// const auth = require('./middlewares/auth');
 
 // Загружаем переменные окружения из файла .env
 dotenv.config();
@@ -24,12 +25,16 @@ const PORT = 3000;
 
 app.use(express.json());
 
-app.post('/signin', isAuthorized, login);
-app.post('/signup', isAuthorized, createUser);
+app.use('/signin', isAuthorized, login);
+app.use('/signup', isAuthorized, createUser);
+
+app.use(isAuthorized);
+app.use('/users', require('./routes/users'));
+app.use('/cards', require('./routes/cards'));
 
 app.patch('/*', (req, res) => res.status(404).send({ message: 'Страница не найдена' }));
 
-app.use(router);
+// app.use(router);
 
 app.listen(PORT, () => {
   console.log(`Пример приложения слушает порт ${PORT}`);
