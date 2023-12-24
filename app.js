@@ -11,7 +11,8 @@ dotenv.config();
 const { isAuthorized } = require('./middlewares/auth');
 const { login, createUser } = require('./controllers/users');
 
-mongoose.connect(process.env.MONGODB_URI, {
+// mongoose.connect(process.env.MONGODB_URI, {
+mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
 }).then(() => {
   console.log('Подключено к MongoDB');

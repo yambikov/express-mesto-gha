@@ -1,8 +1,6 @@
 // auth.js
 const jwt = require('jsonwebtoken');
 
-// const { SECRET_KEY } = process.env;
-// const SECRET_KEY = 'some-secret-key';
 const { SECRET_KEY, NODE_ENV } = process.env;
 // console.log(SECRET_KEY);
 
