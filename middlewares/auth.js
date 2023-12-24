@@ -1,12 +1,16 @@
+// auth.js
 const jwt = require('jsonwebtoken');
 
-const SECRET_KEY = 'some-secret-key';
+// const { SECRET_KEY } = process.env;
+// const SECRET_KEY = 'some-secret-key';
+const { SECRET_KEY } = process.env;
+// console.log(SECRET_KEY);
 
 const isAuthorized = (req, res, next) => {
   let payload;
   try {
     const token = req.headers.authorization;
-    // console.log(req.headers);
+    console.log(req.headers);
 
     if (!token) {
       throw new Error('NotAuthenticated');
