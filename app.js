@@ -24,17 +24,17 @@ app.use(express.json()); // to support JSON-encoded bodies
 
 // app.use(auth);
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: '65836f46845b0ea1fba4d4bf',
-  };
-  next();
-});
+// app.use((req, res, next) => {
+//   req.user = {
+//     _id: '65836f46845b0ea1fba4d4bf',
+//   };
+//   next();
+// });
 
 app.post('/signin', isAuthorized, login);
 app.post('/signup', isAuthorized, createUser);
 
-// app.patch('/*', (req, res) => res.status(404).send({ message: 'Страница не найдена' }));
+app.patch('/*', (req, res) => res.status(404).send({ message: 'Страница не найдена' }));
 
 app.use(router);
 

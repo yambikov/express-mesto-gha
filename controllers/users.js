@@ -57,7 +57,7 @@ const login = (req, res) => {
         const token = generateJwtToken({
           id: user._id,
         });
-        console.log(token);
+        // console.log(token);
         return res.status(200).send({ message: 'Вы успешно вошли', id: user._id, token });
       });
     });

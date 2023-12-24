@@ -6,7 +6,7 @@ const { ErrorMessages } = require('../utils/errors');
 
 const createCard = (req, res) => {
   const { name, link } = req.body;
-  console.log(req.body);
+  // console.log(req.body);
 
   return CardModel.create({ name, link, owner: req.user._id })
     .then((data) => {
