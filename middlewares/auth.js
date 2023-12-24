@@ -10,13 +10,14 @@ const isAuthorized = (req, res, next) => {
   let payload;
   try {
     const token = req.headers.authorization;
-    console.log(req.headers);
+    // console.log(token);
 
     if (!token) {
       throw new Error('NotAuthenticated');
     }
 
     const validToken = token.replace('Bearer ', '');
+    // console.log(validToken);
     payload = jwt.verify(validToken, SECRET_KEY);
   } catch (error) {
     if (error.message === 'NotAuthenticated') {
