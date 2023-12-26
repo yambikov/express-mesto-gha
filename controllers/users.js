@@ -74,7 +74,7 @@ const getUsers = (req, res) => {
 const getUserById = (req, res) => {
   const { userId } = req.params;
   console.log('getUserById CONTROLLER');
-  console.log(userId);
+  // console.log(userId);
   userModel.findById(userId)
     .then((data) => {
       if (!data) {
@@ -140,7 +140,7 @@ const getCurrentUser = (req, res) => {
   const userId = req.user.id; // Получаем id из аутентифицированного пользователя в объекте запроса
   // const userId = req;
   console.log('getCurrentUser_CONTROLLER');
-  console.log(userId);
+  // console.log(userId);
 
   userModel.findById(userId)
     .then((data) => {

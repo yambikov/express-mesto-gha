@@ -6,9 +6,10 @@ const { ErrorMessages } = require('../utils/errors');
 
 const createCard = (req, res) => {
   const { name, link } = req.body;
-  // console.log(req.body);
+  // console.log(req.user.id);
 
-  return CardModel.create({ name, link, owner: req.user._id })
+  // return CardModel.create({ name, link, owner: req.user._id })
+  return CardModel.create({ name, link, owner: req.user.id })
     .then((data) => {
       res.status(http2.constants.HTTP_STATUS_CREATED).send(data);
     })
@@ -33,12 +34,16 @@ const getCards = (req, res) => {
 
 const deleteCard = async (req, res) => {
   const { cardId } = req.params;
+  console.log('deleteCard_CONTROLLER');
+  console.log(cardId);
 
   try {
     const data = await CardModel.findByIdAndDelete(cardId).orFail();
+    console.log(data);
 
     // Если запрос вернул данные, отправляем успешный ответ
-    return res.status(http2.constants.HTTP_STATUS_OK).send(data);
+    // return res.status(http2.constants.HTTP_STATUS_OK).send(data);
+    return res.status(http2.constants.HTTP_STATUS_OK).send('Карточка удалена');
   } catch (err) {
     if (err.name === 'DocumentNotFoundError') {
       // Если не найдено документа с указанным ID, отправляем 404 ошибку
@@ -58,7 +63,7 @@ const deleteCard = async (req, res) => {
 const addCardLike = (req, res) => {
   CardModel.findByIdAndUpdate(
     req.params.cardId,
-    { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
+    { $addToSet: { likes: req.user.id } }, // добавить _id в массив, если его там нет
     { new: true },
   )
     .then((data) => {
@@ -82,7 +87,7 @@ const addCardLike = (req, res) => {
 const removeCardLike = (req, res) => {
   CardModel.findByIdAndUpdate(
     req.params.cardId,
-    { $pull: { likes: req.user._id } }, // убрать _id из массива
+    { $pull: { likes: req.user.id } }, // убрать _id из массива
     { new: true },
   )
     .then((data) => {
