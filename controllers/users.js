@@ -97,7 +97,7 @@ const getUserById = (req, res) => {
 const updateUser = (req, res) => {
   const { name, about } = req.body;
   console.log('updateUser_CONTROLLER');
-  userModel.findByIdAndUpdate(req.user._id, { name, about }, {
+  userModel.findByIdAndUpdate(req.user.id, { name, about }, {
     new: true, // обработчик then получит на вход обновлённую запись
     runValidators: true, // данные будут валидированы перед изменением
   })
@@ -119,7 +119,7 @@ const updateAvatar = (req, res) => {
   const { avatar } = req.body;
   console.log('updateAvatar_CONTROLLER');
 
-  userModel.findByIdAndUpdate(req.user._id, { avatar }, {
+  userModel.findByIdAndUpdate(req.user.id, { avatar }, {
     new: true, // обработчик then получит на вход обновлённую запись
     runValidators: true,
   })
