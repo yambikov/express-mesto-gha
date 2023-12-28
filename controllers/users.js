@@ -37,7 +37,7 @@ const createUser = (req, res, next) => {
       email,
       password: hashedPassword,
     }))
-    .then((admin) => res.status(201).send(admin))
+    .then((admin) => res.status(200).send(admin))
     .catch((err) => {
       if (err.code === MONGO_DUPLICATE_ERROR_CODE) {
         return next(new ConflictError('Пользователь уже существует'));
@@ -74,8 +74,7 @@ const login = (req, res, next) => {
           return res
             .status(http2.constants.HTTP_STATUS_OK)
             .send({ message: 'Вы успешно вошли', id: user._id, token });
-        })
-        .catch(next);
+        });
     })
     .catch(next);
 };

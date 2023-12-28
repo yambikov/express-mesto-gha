@@ -2,13 +2,14 @@
 const jwt = require('jsonwebtoken');
 
 const { SECRET_KEY, NODE_ENV } = process.env;
-// console.log(SECRET_KEY);
+console.log(SECRET_KEY);
 
 const isAuthorized = (req, res, next) => {
   let payload;
+  // console.log(payload);
   try {
     const token = req.headers.authorization;
-    // console.log(token);
+    // console.log(req.headers);
 
     if (!token) {
       throw new Error('NotAuthenticated');
