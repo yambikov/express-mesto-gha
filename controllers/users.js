@@ -64,16 +64,18 @@ const login = (req, res, next) => {
         throw new NotFoundError('Такого пользователя не существует');
       }
 
-      return bcrypt.compare(password, user.password, (err, isValidPassword) => {
-        if (!isValidPassword) {
-          throw new UnauthorizedError('Неверный пароль');
-        }
+      return bcrypt.compare(password, user.password)
+        .then((isValidPassword) => {
+          if (!isValidPassword) {
+            throw new UnauthorizedError('Неверный пароль');
+          }
 
-        const token = generateJwtToken({ id: user._id });
-        return res
-          .status(http2.constants.HTTP_STATUS_OK)
-          .send({ message: 'Вы успешно вошли', id: user._id, token });
-      });
+          const token = generateJwtToken({ id: user._id });
+          return res
+            .status(http2.constants.HTTP_STATUS_OK)
+            .send({ message: 'Вы успешно вошли', id: user._id, token });
+        })
+        .catch(next);
     })
     .catch(next);
 };
