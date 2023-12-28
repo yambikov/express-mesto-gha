@@ -26,8 +26,10 @@ const PORT = 3000;
 
 app.use(express.json());
 
-app.use('/signin', isAuthorized, login);
-app.use('/signup', isAuthorized, createUser);
+// app.use('/signin', isAuthorized, login);
+app.use('/signin', login);
+// app.use('/signup', isAuthorized, createUser);
+app.use('/signup', createUser);
 
 app.use(isAuthorized);
 app.use('/users', require('./routes/users'));
