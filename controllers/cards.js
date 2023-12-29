@@ -43,7 +43,7 @@ const deleteCard = async (req, res, next) => {
   console.log(cardId);
 
   try {
-    const data = await CardModel.findByIdAndDelete(cardId).orFail();
+    const data = await CardModel.findByIdAndDelete({ _id: cardId, owner: req.user.id }).orFail();
     console.log(data);
 
     // Если запрос вернул данные, отправляем успешный ответ
