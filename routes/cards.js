@@ -9,10 +9,15 @@ const {
   removeCardLike,
 } = require('../controllers/cards');
 
-cardsRouter.post('/', createCard); // полный путь /cards/
+const {
+  validateCreateCard,
+  validateCardId,
+} = require('../middlewares/validation');
+
+cardsRouter.post('/', validateCreateCard, createCard); // полный путь /cards/
 cardsRouter.get('/', getCards); // полный путь /cards/
-cardsRouter.delete('/:cardId', deleteCard); // полный путь /cards/:cardId
-cardsRouter.put('/:cardId/likes', addCardLike); // полный путь /cards/:cardId
-cardsRouter.delete('/:cardId/likes', removeCardLike);
+cardsRouter.delete('/:cardId', validateCardId, deleteCard); // полный путь /cards/:cardId
+cardsRouter.put('/:cardId/likes', validateCardId, addCardLike); // полный путь /cards/:cardId
+cardsRouter.delete('/:cardId/likes', validateCardId, removeCardLike);
 
 module.exports = cardsRouter;

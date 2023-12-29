@@ -9,11 +9,17 @@ const {
   getCurrentUser,
 } = require('../controllers/users');
 
-userRouter.get('/', getUsers); // полный путь /users/ так как в app.use('/users', userRouter);
-userRouter.get('/me', getCurrentUser); // полный путь /users/me
-userRouter.get('/:userId', getUserById); // полный путь /users/:userId'
+const {
+  validateUpdateUser,
+  validateUpdateAvatar,
+  validateUserId,
+} = require('../middlewares/validation');
 
-userRouter.patch('/me', updateUser); // полный путь /users/me
-userRouter.patch('/me/avatar', updateAvatar); // полный путь /users/me/avatar
+userRouter.get('/', getUsers); // полный путь /users/ так как в app.use('/users', userRouter);
+userRouter.get('/me', validateUserId, getCurrentUser); // полный путь /users/me
+userRouter.get('/:userId', validateUserId, getUserById); // полный путь /users/:userId'
+
+userRouter.patch('/me', validateUpdateUser, updateUser); // полный путь /users/me
+userRouter.patch('/me/avatar', validateUpdateAvatar, updateAvatar); // полный путь /users/me/avatar
 
 module.exports = userRouter;

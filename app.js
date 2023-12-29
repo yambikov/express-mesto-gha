@@ -7,12 +7,17 @@ const dotenv = require('dotenv'); // Импортируем dotenv
 // const auth = require('./middlewares/auth');
 const { errors } = require('celebrate');
 const errorHandler = require('./middlewares/errorHandler');
+const {
+  validateCreateUser,
+  validateLogin,
+} = require('./middlewares/validation');
 
 // Загружаем переменные окружения из файла .env
 dotenv.config();
 
 const { isAuthorized } = require('./middlewares/auth');
 const { login, createUser } = require('./controllers/users');
+// const { validateLogin } = require('./middlewares/validation');
 
 // mongoose.connect(process.env.MONGODB_URI, {
 mongoose.connect('mongodb://localhost:27017/mestodb', {
@@ -28,9 +33,9 @@ const PORT = 3000;
 app.use(express.json());
 
 // app.use('/signin', isAuthorized, login);
-app.use('/signin', login);
+app.use('/signin', validateLogin, login);
 // app.use('/signup', isAuthorized, createUser);
-app.use('/signup', createUser);
+app.use('/signup', validateCreateUser, createUser);
 
 app.use(isAuthorized);
 app.use('/users', require('./routes/users'));
