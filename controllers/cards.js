@@ -2,20 +2,13 @@
 
 const http2 = require('http2');
 const CardModel = require('../models/card');
-// const { ErrorMessages } = require('../utils/errors');
 
-// const UnauthorizedError = require('../errors/UnauthorizedError');
 const ValidationError = require('../errors/ValidationError');
-// const ConflictError = require('../errors/ConflictError');
 const NotFoundError = require('../errors/NotFoundErr');
-const CastError = require('../errors/CastError');
 const ForbiddenError = require('../errors/ForbiddenError');
 
 const createCard = (req, res, next) => {
   const { name, link } = req.body;
-  // console.log(req.user.id);
-
-  // return CardModel.create({ name, link, owner: req.user._id })
   return CardModel.create({ name, link, owner: req.user.id })
     .then((data) => {
       // res.status(http2.constants.HTTP_STATUS_CREATED).send(data);
@@ -59,7 +52,7 @@ const deleteCard = async (req, res, next) => {
     if (err.name === 'DocumentNotFoundError') {
       return next(new NotFoundError('Карточка по указанному _id не найдена'));
     } if (err.name === 'CastError') {
-      return next(new CastError('Переданы некорректные данные'));
+      return next(new ValidationError('Переданы некорректные данные'));
     }
     return next(err);
   }
@@ -81,7 +74,7 @@ const addCardLike = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         // Если неправильный формат ID, отправляем 400 ошибку
-        return next(new CastError('Переданы некорректные данные для постановки/снятии лайка'));
+        return next(new ValidationError('Переданы некорректные данные для постановки/снятии лайка'));
       }
       // В случае других ошибок, отправляем 500 ошибку
       return next(err);
@@ -103,7 +96,7 @@ const removeCardLike = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return next(new CastError('Переданы некорректные данные для постановки/снятия лайка'));
+        return next(new ValidationError('Переданы некорректные данные для постановки/снятия лайка'));
       }
       return next(err);
     });
