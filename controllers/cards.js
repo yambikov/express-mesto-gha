@@ -49,7 +49,7 @@ const deleteCard = async (req, res, next) => {
     // Если запрос вернул данные, отправляем успешный ответ
     // return res.status(http2.constants.HTTP_STATUS_OK).send(data);
     // return res.status(http2.constants.HTTP_STATUS_OK).send('Карточка удалена');
-    return res.status(200).send('Карточка удалена');
+    return res.status(200).send(data);
   } catch (err) {
     if (err.name === 'DocumentNotFoundError') {
       // Если не найдено документа с указанным ID, отправляем 404 ошибку
