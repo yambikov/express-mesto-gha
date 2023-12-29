@@ -2,37 +2,42 @@
 
 const http2 = require('http2');
 const CardModel = require('../models/card');
-const { ErrorMessages } = require('../utils/errors');
+// const { ErrorMessages } = require('../utils/errors');
 
-const createCard = (req, res) => {
+// const UnauthorizedError = require('../errors/UnauthorizedError');
+const ValidationError = require('../errors/ValidationError');
+// const ConflictError = require('../errors/ConflictError');
+const NotFoundError = require('../errors/NotFoundErr');
+const CastError = require('../errors/CastError');
+
+const createCard = (req, res, next) => {
   const { name, link } = req.body;
   // console.log(req.user.id);
 
   // return CardModel.create({ name, link, owner: req.user._id })
   return CardModel.create({ name, link, owner: req.user.id })
     .then((data) => {
-      res.status(http2.constants.HTTP_STATUS_CREATED).send(data);
+      // res.status(http2.constants.HTTP_STATUS_CREATED).send(data);
+      res.status(200).send(data);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(http2.constants.HTTP_STATUS_BAD_REQUEST)
-          .send({ message: ErrorMessages.Cards400 });
+        return next(new ValidationError('Переданы некорректные данные'));
       }
-      return res.status(http2.constants.HTTP_STATUS_INTERNAL_SERVER_ERROR)
-        .send({ message: ErrorMessages.ServerError500 });
+      return next(err); // Передаем ошибку дальше для централизованной обработки
     });
 };
 
-const getCards = (req, res) => {
+const getCards = (req, res, next) => {
   CardModel.find()
     .then((data) => {
-      res.status(http2.constants.HTTP_STATUS_OK).send(data);
+      // res.status(http2.constants.HTTP_STATUS_OK).send(data);
+      res.status(200).send(data);
     })
-    .catch(() => res.status(http2.constants.HTTP_STATUS_INTERNAL_SERVER_ERROR)
-      .send({ message: ErrorMessages.ServerError500 }));
+    .catch(next);
 };
 
-const deleteCard = async (req, res) => {
+const deleteCard = async (req, res, next) => {
   const { cardId } = req.params;
   console.log('deleteCard_CONTROLLER');
   console.log(cardId);
@@ -43,24 +48,22 @@ const deleteCard = async (req, res) => {
 
     // Если запрос вернул данные, отправляем успешный ответ
     // return res.status(http2.constants.HTTP_STATUS_OK).send(data);
-    return res.status(http2.constants.HTTP_STATUS_OK).send('Карточка удалена');
+    // return res.status(http2.constants.HTTP_STATUS_OK).send('Карточка удалена');
+    return res.status(200).send('Карточка удалена');
   } catch (err) {
     if (err.name === 'DocumentNotFoundError') {
       // Если не найдено документа с указанным ID, отправляем 404 ошибку
-      return res.status(http2.constants.HTTP_STATUS_NOT_FOUND)
-        .send({ message: ErrorMessages.CardsId404 });
+      return next(new NotFoundError('Карточка по указанному _id не найдена'));
     } if (err.name === 'CastError') {
       // Если неправильный формат ID, отправляем 400 ошибку
-      return res.status(http2.constants.HTTP_STATUS_BAD_REQUEST)
-        .send({ message: ErrorMessages.Error400 });
+      return next(new CastError('Переданы некорректные данные'));
     }
     // В случае других ошибок, отправляем 500 ошибку
-    return res.status(http2.constants.HTTP_STATUS_INTERNAL_SERVER_ERROR)
-      .send({ message: ErrorMessages.ServerError500 });
+    return next(err);
   }
 };
 
-const addCardLike = (req, res) => {
+const addCardLike = (req, res, next) => {
   CardModel.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user.id } }, // добавить _id в массив, если его там нет
@@ -68,23 +71,22 @@ const addCardLike = (req, res) => {
   )
     .then((data) => {
       if (!data) {
-        return res.status(http2.constants.HTTP_STATUS_NOT_FOUND)
-          .send({ message: ErrorMessages.CardsLike404 });
+        return next(new NotFoundError('Передан несуществующий _id карточки'));
       }
       return res.status(http2.constants.HTTP_STATUS_OK).send(data);
     })
 
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(http2.constants.HTTP_STATUS_BAD_REQUEST)
-          .send({ message: ErrorMessages.CardsLike400 });
+        // Если неправильный формат ID, отправляем 400 ошибку
+        return next(new CastError('Переданы некорректные данные для постановки/снятии лайка'));
       }
-      return res.status(http2.constants.HTTP_STATUS_INTERNAL_SERVER_ERROR)
-        .send({ message: ErrorMessages.ServerError500 }); // Отправляем ошибку
+      // В случае других ошибок, отправляем 500 ошибку
+      return next(err);
     });
 };
 
-const removeCardLike = (req, res) => {
+const removeCardLike = (req, res, next) => {
   CardModel.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user.id } }, // убрать _id из массива
@@ -92,18 +94,16 @@ const removeCardLike = (req, res) => {
   )
     .then((data) => {
       if (!data) {
-        return res.status(http2.constants.HTTP_STATUS_NOT_FOUND)
-          .send({ message: ErrorMessages.CardsLike404 });
+        return next(new NotFoundError('Передан несуществующий _id карточки'));
       }
-      return res.status(http2.constants.HTTP_STATUS_OK).send(data);
+      // return res.status(http2.constants.HTTP_STATUS_OK).send(data);
+      return res.status(200).send(data);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(http2.constants.HTTP_STATUS_BAD_REQUEST)
-          .send({ message: ErrorMessages.CardsLike400 });
+        return next(new CastError('Переданы некорректные данные для постановки/снятия лайка'));
       }
-      return res.status(http2.constants.HTTP_STATUS_INTERNAL_SERVER_ERROR)
-        .send({ message: ErrorMessages.ServerError500 }); // Отправляем ошибку
+      return next(err);
     });
 };
 
