@@ -68,13 +68,13 @@ const login = (req, res, next) => {
     .select('+password')
     .then((user) => {
       if (!user) {
-        throw new NotFoundError('Такого пользователя не существует');
+        throw new UnauthorizedError('Неверные логин или пароль');
       }
 
       return bcrypt.compare(password, user.password)
         .then((isValidPassword) => {
           if (!isValidPassword) {
-            throw new UnauthorizedError('Неверный пароль');
+            throw new UnauthorizedError('Неверные логин или пароль');
           }
 
           const token = generateJwtToken({ id: user._id });
