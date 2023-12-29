@@ -21,6 +21,7 @@ const createUser = (req, res, next) => {
     name, about, avatar, email, password,
   } = req.body;
   console.log('REGISTER CONTROLLER');
+  console.log(req.body);
 
   // if (!email || !password) {
   //   return res
@@ -37,7 +38,13 @@ const createUser = (req, res, next) => {
       email,
       password: hashedPassword,
     }))
-    .then((admin) => res.status(200).send(admin))
+    .then((user) => {
+      // Избегаем возврата пароля в ответе
+      const userWithoutPassword = user.toObject();
+      // console.log(userWithoutPassword);
+      delete userWithoutPassword.password;
+      res.status(200).send(userWithoutPassword);
+    })
     .catch((err) => {
       if (err.code === MONGO_DUPLICATE_ERROR_CODE) {
         return next(new ConflictError('Пользователь уже существует'));
