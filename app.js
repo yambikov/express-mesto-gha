@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv'); // Импортируем dotenv
 // const router = require('./routes');
 // const auth = require('./middlewares/auth');
+const { errors } = require('celebrate');
 const errorHandler = require('./middlewares/errorHandler');
 
 // Загружаем переменные окружения из файла .env
@@ -38,6 +39,9 @@ app.use('/cards', require('./routes/cards'));
 app.patch('/*', (req, res) => res.status(404).send({ message: 'Страница не найдена' }));
 
 // app.use(router);
+
+// обработчики ошибок
+app.use(errors()); // обработчик ошибок celebrate
 
 // это обработчик ошибки
 app.use(errorHandler);
