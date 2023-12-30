@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const UnauthorizedError = require('../errors/UnauthorizedError');
 
 const { SECRET_KEY, NODE_ENV } = process.env;
-console.log(SECRET_KEY);
+// console.log(SECRET_KEY);
 
 const isAuthorized = (req, res, next) => {
   let payload;

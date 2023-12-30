@@ -18,7 +18,7 @@ const createUser = (req, res, next) => {
     name, about, avatar, email, password,
   } = req.body;
   console.log('REGISTER CONTROLLER');
-  console.log(req.body);
+  // console.log(req.body);
 
   // if (!email || !password) {
   //   return res
@@ -53,30 +53,16 @@ const login = (req, res, next) => {
   const { email, password } = req.body;
   console.log('AUTH_CONTROLLER');
 
-  // if (!email || !password) {
-  //   const error = new ValidationError('Email или пароль не может быть пустым');
-  //   return next(error);
-  // }
-
   return userModel
-    .findOne({ email })
-    .select('+password')
+    .findUserByCredentials(email, password)
     .then((user) => {
-      if (!user) {
-        throw new UnauthorizedError('Неверные логин или пароль');
-      }
-
-      return bcrypt.compare(password, user.password)
-        .then((isValidPassword) => {
-          if (!isValidPassword) {
-            throw new UnauthorizedError('Неверные логин или пароль');
-          }
-
-          const token = generateJwtToken({ id: user._id });
-          return res
-            .status(http2.constants.HTTP_STATUS_OK)
-            .send({ message: 'Вы успешно вошли', id: user._id, token });
-        });
+      const token = generateJwtToken({ id: user._id });
+      return res
+        .status(http2.constants.HTTP_STATUS_OK)
+        .send({ message: 'Вы успешно вошли', id: user._id, token });
+    })
+    .catch(() => {
+      throw new UnauthorizedError('Неправильные почта или пароль');
     })
     .catch(next);
 };
@@ -166,12 +152,13 @@ const getCurrentUser = (req, res, next) => {
       }
       return res.status(http2.constants.HTTP_STATUS_OK).send(data);
     })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        return next(new ValidationError('Переданы некорректные данные'));
-      }
-      return next(err);
-    });
+    // .catch((err) => {
+    //   if (err.name === 'CastError') {
+    //     return next(new ValidationError('Переданы некорректные данные'));
+    //   }
+    //   return next(err);
+    // });
+    .catch(next);
 };
 
 module.exports = {
