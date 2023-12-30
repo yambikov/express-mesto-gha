@@ -53,10 +53,10 @@ const login = (req, res, next) => {
   const { email, password } = req.body;
   console.log('AUTH_CONTROLLER');
 
-  if (!email || !password) {
-    const error = new ValidationError('Email или пароль не может быть пустым');
-    return next(error);
-  }
+  // if (!email || !password) {
+  //   const error = new ValidationError('Email или пароль не может быть пустым');
+  //   return next(error);
+  // }
 
   return userModel
     .findOne({ email })
