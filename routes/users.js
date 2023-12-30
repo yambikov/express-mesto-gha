@@ -16,7 +16,7 @@ const {
 } = require('../middlewares/validation');
 
 userRouter.get('/', getUsers); // полный путь /users/ так как в app.use('/users', userRouter);
-userRouter.get('/me', validateUserId, getCurrentUser); // полный путь /users/me
+userRouter.get('/me', getCurrentUser); // полный путь /users/me
 userRouter.get('/:userId', validateUserId, getUserById); // полный путь /users/:userId'
 
 userRouter.patch('/me', validateUpdateUser, updateUser); // полный путь /users/me

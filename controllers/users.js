@@ -142,7 +142,8 @@ const updateAvatar = (req, res, next) => {
 
 const getCurrentUser = (req, res, next) => {
   const userId = req.user.id; // Получаем id из аутентифицированного пользователя в объекте запроса
-  // console.log('getCurrentUser_CONTROLLER');
+  console.log('getCurrentUser_CONTROLLER');
+  console.log(req.user.id);
 
   userModel
     .findById(userId)
