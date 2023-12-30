@@ -25,7 +25,6 @@ const createCard = (req, res, next) => {
 const getCards = (req, res, next) => {
   CardModel.find()
     .then((data) => {
-      // res.status(http2.constants.HTTP_STATUS_OK).send(data);
       res.status(200).send(data);
     })
     .catch(next);

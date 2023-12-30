@@ -18,14 +18,6 @@ const createUser = (req, res, next) => {
     name, about, avatar, email, password,
   } = req.body;
   console.log('REGISTER CONTROLLER');
-  // console.log(req.body);
-
-  // if (!email || !password) {
-  //   return res
-  //     .status(400)
-  //     .send({ message: 'Email или пароль не может быть пустым' });
-  // }
-
   return bcrypt
     .hash(password, HASH_SALT_ROUNDS)
     .then((hashedPassword) => userModel.create({
