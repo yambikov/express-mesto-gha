@@ -5,7 +5,6 @@ const bcrypt = require('bcryptjs'); // Добавляем bcryptjs
 const userModel = require('../models/user');
 const { generateJwtToken } = require('../utils/jwt');
 
-const UnauthorizedError = require('../errors/UnauthorizedError');
 const ValidationError = require('../errors/ValidationError');
 const ConflictError = require('../errors/ConflictError');
 const NotFoundError = require('../errors/NotFoundErr');
@@ -52,9 +51,6 @@ const login = (req, res, next) => {
       return res
         .status(http2.constants.HTTP_STATUS_OK)
         .send({ message: 'Вы успешно вошли', id: user._id, token });
-    })
-    .catch(() => {
-      throw new UnauthorizedError('Неправильные почта или пароль');
     })
     .catch(next);
 };
@@ -145,12 +141,6 @@ const getCurrentUser = (req, res, next) => {
       }
       return res.status(http2.constants.HTTP_STATUS_OK).send(data);
     })
-    // .catch((err) => {
-    //   if (err.name === 'CastError') {
-    //     return next(new ValidationError('Переданы некорректные данные'));
-    //   }
-    //   return next(err);
-    // });
     .catch(next);
 };
 
