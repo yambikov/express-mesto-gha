@@ -9,6 +9,7 @@ const {
   validateCreateUser,
   validateLogin,
 } = require('./middlewares/validation');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 // Загружаем переменные окружения из файла .env
 dotenv.config();
@@ -29,6 +30,8 @@ const PORT = 3000;
 
 app.use(express.json());
 
+app.use(requestLogger); // подключаем логгер запросов за ним идут все обработчики роутов
+
 app.use('/signin', validateLogin, login);
 app.use('/signup', validateCreateUser, createUser);
 
@@ -40,7 +43,8 @@ app.use('/*', (req, res, next) => {
   next(new NotFoundError('Страница не найдена'));
 });
 
-// app.patch('/*', (req, res) => res.status(404).send({ message: 'Страница не найдена' }));
+// errorLogger нужно подключить после обработчиков роутов и до обработчиков ошибок
+app.use(errorLogger);
 
 // обработчики ошибок
 app.use(errors()); // обработчик ошибок celebrate
